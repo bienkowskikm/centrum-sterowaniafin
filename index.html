@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1F3864">
+<title>Centrum Sterowania — Patent EP 4 164 895 B1</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #F0F2F5;
+    color: #111;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --navy: #1F3864;
+    --blue: #2E75B6;
+    --lblue: #D6E4F0;
+    --mint: #E2EFDA;
+    --yellow: #FFF2CC;
+    --red-l: #FCE4D6;
+    --gray: #F2F2F2;
+    --border: #E0E0E0;
+    --text: #111;
+    --text2: #555;
+    --text3: #999;
+    --surface: #fff;
+    --surface2: #F7F8FA;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --navy: #1a3057;
+      --blue: #4A9FD4;
+      --lblue: #1e3a5f;
+      --border: #2a2a2a;
+      --text: #F0F0F0;
+      --text2: #aaa;
+      --text3: #666;
+      --surface: #1C1C1E;
+      --surface2: #2C2C2E;
+      background: #000;
+    }
+    body { background: #000; }
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    padding: 52px 16px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 17px; font-weight: 600; color: #fff; }
+  .topbar-sub { font-size: 11px; color: #9DC3E6; margin-top: 2px; }
+  .week-badge {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    cursor: pointer;
+    border: none;
+    border-bottom: 2.5px solid transparent;
+    background: none;
+    white-space: nowrap;
+    transition: color 0.15s;
+    font-family: inherit;
+  }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 80px;
+  }
+  .screen.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+  }
+
+  /* ── STATS ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .stat {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 12px;
+  }
+  .stat-label { font-size: 11px; color: var(--text3); }
+  .stat-value { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 3px; }
+
+  /* ── PHASE ROWS ── */
+  .phase-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .phase-row:last-child { border-bottom: none; }
+  .phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red { background: #E24B4A; }
+  .dot-yellow { background: #EF9F27; }
+  .dot-green { background: #52A843; }
+  .phase-name { font-size: 13px; color: var(--text); flex: 1; line-height: 1.4; }
+  .phase-tag {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .tag-red { background: #FCEBEB; color: #A32D2D; }
+  .tag-yellow { background: #FAEEDA; color: #854F0B; }
+  .tag-green { background: #EAF3DE; color: #3B6D11; }
+
+  /* ── TASK ROWS ── */
+  .task-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .task-row:last-child { border-bottom: none; }
+  .chk {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    cursor: pointer;
+    background: none;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .chk.done { background: #52A843; border-color: #52A843; }
+  .chk.done::after {
+    content: '';
+    display: block;
+    width: 5px; height: 9px;
+    border: 2px solid #fff;
+    border-top: none; border-left: none;
+    transform: rotate(45deg) translate(-1px,-1px);
+  }
+  .task-body { flex: 1; min-width: 0; }
+  .task-text { font-size: 14px; color: var(--text); line-height: 1.4; }
+  .task-text.done { text-decoration: line-through; color: var(--text3); }
+  .task-desc { font-size: 11px; color: var(--text3); margin-top: 2px; line-height: 1.4; }
+  .prio-tag {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 20px; flex-shrink: 0; margin-top: 2px;
+  }
+  .prio-red { background: #FCEBEB; color: #A32D2D; }
+  .prio-orange { background: #FAEEDA; color: #854F0B; }
+  .prio-gray { background: var(--surface2); color: var(--text3); }
+
+  /* ── SECTION LABEL ── */
+  .section-lbl {
+    font-size: 11px; font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 16px 0 8px 2px;
+  }
+
+  /* ── JOURNAL ── */
+  .jentry { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .jentry:last-child { border-bottom: none; }
+  .jmeta { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; flex-wrap: wrap; }
+  .jdate { font-size: 11px; color: var(--text3); }
+  .jphase {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 20px;
+    background: var(--lblue); color: #185FA5;
+  }
+  .jmood { font-size: 11px; color: var(--text3); }
+  .jtext { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .jresult { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  /* ── CONTACTS ── */
+  .crow {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .crow:last-child { border-bottom: none; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--lblue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #185FA5;
+    flex-shrink: 0;
+  }
+  .cname { font-size: 14px; font-weight: 500; color: var(--text); }
+  .crole { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  .cbadge {
+    margin-left: auto; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px; flex-shrink: 0;
+  }
+  .cbadge-crit { background: #FCEBEB; color: #A32D2D; }
+  .cbadge-imp { background: #FAEEDA; color: #854F0B; }
+
+  /* ── BUDGET ── */
+  .brow {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+  }
+  .brow:last-child { border-bottom: none; }
+  .blabel { font-size: 14px; color: var(--text); }
+  .bsub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .bamount { font-size: 15px; font-weight: 600; color: var(--text); }
+  .progress-wrap {
+    background: var(--surface2);
+    border-radius: 20px; height: 8px; overflow: hidden; margin-top: 8px;
+  }
+  .progress-bar {
+    height: 100%; border-radius: 20px; background: var(--blue);
+    transition: width 0.4s ease;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center; padding: 36px 16px;
+    color: var(--text3); font-size: 14px;
+  }
+  .empty-ico { font-size: 32px; margin-bottom: 10px; }
+
+  /* ── ADD BUTTON ── */
+  .add-btn {
+    width: 100%; padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1.5px dashed var(--border);
+    background: none; color: var(--text3);
+    font-size: 14px; cursor: pointer; margin-top: 8px;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .add-btn:active { background: var(--surface2); }
+
+  /* ── FAB ── */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: calc(50% - 205px);
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff; font-size: 26px;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    z-index: 50;
+    transition: transform 0.15s;
+    font-family: inherit;
+  }
+  .fab:active { transform: scale(0.93); }
+  @media (max-width: 430px) { .fab { right: 16px; } }
+
+  /* ── MODAL ── */
+  .overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    padding: 16px 16px 40px;
+    width: 100%; max-width: 430px;
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-title {
+    font-size: 17px; font-weight: 600;
+    color: var(--text); margin-bottom: 16px;
+  }
+
+  /* ── FORM ── */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--text2); margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%; font-size: 15px;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: inherit;
+    -webkit-appearance: none;
+  }
+  .field textarea { resize: none; height: 90px; line-height: 1.5; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--blue);
+  }
+  .hint {
+    font-size: 11px; color: var(--text3);
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px; margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+  .btn {
+    flex: 1; padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  /* ── CONVO COUNTER ── */
+  .convo-ring {
+    display: flex; flex-direction: column;
+    align-items: center; padding: 12px 0;
+  }
+  .ring-num { font-size: 40px; font-weight: 700; color: var(--blue); }
+  .ring-label { font-size: 13px; color: var(--text3); margin-top: 2px; }
+  .ring-sub { font-size: 12px; color: var(--text2); margin-top: 6px; }
+  .progress-wrap-lg {
+    background: var(--surface2); border-radius: 20px;
+    height: 12px; overflow: hidden; margin: 12px 0 4px;
+  }
+  .progress-bar-lg {
+    height: 100%; border-radius: 20px; background: var(--blue);
+    transition: width 0.4s ease;
+  }
+  .ring-steps { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Centrum Sterowania</div>
+      <div class="topbar-sub">Patent EP 4 164 895 B1 · Organożel</div>
+    </div>
+    <div class="week-badge" id="weekBadge">Tydzień 1</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard',this)">Dashboard</button>
+    <button class="tab" onclick="showTab('tasks',this)">Zadania</button>
+    <button class="tab" onclick="showTab('journal',this)">Dziennik</button>
+    <button class="tab" onclick="showTab('convos',this)">Rozmowy</button>
+    <button class="tab" onclick="showTab('contacts',this)">Kontakty</button>
+    <button class="tab" onclick="showTab('budget',this)">Budżet</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard" class="screen active">
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-label">Zadania ✅</div>
+        <div class="stat-value" id="sDone">0/0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Rozmowy 🎙</div>
+        <div class="stat-value" id="sConvo">0/15</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Wydano (zł)</div>
+        <div class="stat-value" id="sSpent">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Zostało (zł)</div>
+        <div class="stat-value" id="sLeft">50 000</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Status faz projektu</div>
+      <div id="phaseList">
+        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 0 — Licencja (CTT UW + MNW)</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 1 — Walidacja rynku</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 2 — Model biznesowy</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 3 — Rejestracja firmy</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 4 — Finansowanie</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 5 — Pilotaż</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ten tydzień — do zrobienia</div>
+      <div id="weekTaskList"></div>
+      <button class="add-btn" onclick="openModal('task')">+ dodaj zadanie tygodnia</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Budżet</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-size:13px;color:var(--text3)">Wydano</span>
+        <span style="font-size:18px;font-weight:600" id="dBudgetSpent">0 zł</span>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" id="dBudgetBar" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px">
+        <span style="font-size:11px;color:var(--text3)">0 zł</span>
+        <span style="font-size:11px;color:var(--text3)">50 000 zł</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZADANIA -->
+  <div id="tab-tasks" class="screen">
+    <div class="section-lbl">Faza 0 — Licencja</div>
+    <div class="card" style="padding:10px 14px"><div id="tList0"></div></div>
+
+    <div class="section-lbl">Faza 1 — Walidacja rynku</div>
+    <div class="card" style="padding:10px 14px"><div id="tList1"></div></div>
+
+    <div class="section-lbl">Faza 2–5</div>
+    <div class="card" style="padding:10px 14px"><div id="tList2"></div></div>
+
+    <button class="add-btn" onclick="openModal('task')">+ nowe zadanie</button>
+  </div>
+
+  <!-- DZIENNIK -->
+  <div id="tab-journal" class="screen">
+    <div class="card" style="padding:10px 14px">
+      <div id="journalList">
+        <div class="empty"><div class="empty-ico">📓</div>Brak wpisów.<br>Kliknij + aby dodać.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROZMOWY -->
+  <div id="tab-convos" class="screen">
+    <div class="card">
+      <div class="convo-ring">
+        <div class="ring-num" id="convoNum">0</div>
+        <div class="ring-label">rozmów z 15</div>
+        <div class="ring-sub">Cel: 15 rozmów w 6 tygodniach</div>
+      </div>
+      <div class="progress-wrap-lg">
+        <div class="progress-bar-lg" id="convoBar" style="width:0%"></div>
+      </div>
+      <div class="ring-steps"><span>0</span><span>5</span><span>10</span><span>15</span></div>
+    </div>
+
+    <div class="card" style="padding:10px 14px">
+      <div class="card-title">Lista rozmów</div>
+      <div id="convoList">
+        <div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów.<br>Kliknij + po każdej rozmowie.</div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="openModal('convo')">+ dodaj rozmowę z konserwatorem</button>
+  </div>
+
+  <!-- KONTAKTY -->
+  <div id="tab-contacts" class="screen">
+    <div class="card" style="padding:10px 14px">
+      <div id="contactList"></div>
+    </div>
+    <button class="add-btn" onclick="openModal('contact')">+ nowy kontakt</button>
+  </div>
+
+  <!-- BUDŻET -->
+  <div id="tab-budget" class="screen">
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-label">Budżet (zł)</div>
+        <div class="stat-value">50 000</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Pozostało (zł)</div>
+        <div class="stat-value" id="bLeft">50 000</div>
+      </div>
+    </div>
+    <div class="card" style="padding:10px 14px">
+      <div class="card-title">Wydatki</div>
+      <div id="expList">
+        <div class="empty"><div class="empty-ico">💰</div>Brak wydatków.<br>Kliknij + aby dodać.</div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="openModal('expense')">+ nowy wydatek</button>
+  </div>
+
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="onFab()">+</button>
+
+<!-- MODAL OVERLAY -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div id="mContent"></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+const BUDGET_TOTAL = 50000;
+let S = {
+  tasks: [
+    {id:1,phase:'0',text:'Wyślij email do CTT UW',desc:'ctt@adm.uw.edu.pl | tel. +48 22 55 24 009',prio:'pilne',done:false,week:true},
+    {id:2,phase:'0',text:'Wyślij email do MNW (dział prawny)',desc:'sekretariat@mnw.art.pl | +48 22 621 10 31',prio:'pilne',done:false,week:true},
+    {id:3,phase:'0',text:'Znajdź prawnika IP',desc:'uprp.gov.pl — lista rzeczników patentowych',prio:'pilne',done:false,week:true},
+    {id:4,phase:'0',text:'Negocjuj warunki licencji z CTT UW',desc:'Zakres terytorialny, royalties 3–8%, wyłączność',prio:'pilne',done:false,week:false},
+    {id:5,phase:'0',text:'Podpisz umowę licencyjną',desc:'Sprawdź z prawnikiem PRZED podpisaniem',prio:'pilne',done:false,week:false},
+    {id:6,phase:'1',text:'Stwórz listę 20 konserwatorów',desc:'skz.pl, LinkedIn, strony muzeów',prio:'pilne',done:false,week:true},
+    {id:7,phase:'1',text:'Wyślij wiadomości do 10 konserwatorów',desc:'Użyj przygotowanego szablonu — nie sprzedajesz, pytasz',prio:'pilne',done:false,week:false},
+    {id:8,phase:'1',text:'Przeprowadź 15 rozmów walidacyjnych',desc:'Cel: 15 rozmów w 6 tygodniach',prio:'ważne',done:false,week:false},
+    {id:9,phase:'1',text:'Podsumuj wyniki walidacji rynku',desc:'Kto jest klientem? Ile zapłaci? Jaki model?',prio:'ważne',done:false,week:false},
+    {id:10,phase:'2',text:'Sprawdź program NCN Tango',desc:'ncn.gov.pl — komercjalizacja wyników badań',prio:'ważne',done:false,week:false},
+    {id:11,phase:'2',text:'Sprawdź AIP UW (inkubator)',desc:'aip.uw.edu.pl — mentoring, przestrzeń, sieć',prio:'normalne',done:false,week:false},
+    {id:12,phase:'2',text:'Zarejestruj firmę (JDG)',desc:'biznes.gov.pl — bezpłatnie, działa od razu',prio:'normalne',done:false,week:false},
+  ],
+  journal: [],
+  convos: [],
+  contacts: [],
+  expenses: [],
+  nid: 100,
+  startDate: new Date().toISOString().slice(0,10),
+};
+
+function load() {
+  try { const d = localStorage.getItem('cs_v2'); if(d) S = JSON.parse(d); } catch(e) {}
+}
+function save() {
+  try { localStorage.setItem('cs_v2', JSON.stringify(S)); } catch(e) {}
+  render();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  renderStats();
+  renderWeekTasks();
+  renderTasks();
+  renderJournal();
+  renderConvos();
+  renderContacts();
+  renderExpenses();
+  renderBudget();
+  renderWeekBadge();
+}
+
+function renderWeekBadge() {
+  const start = new Date(S.startDate);
+  const now = new Date();
+  const weeks = Math.floor((now - start) / (7*24*60*60*1000)) + 1;
+  document.getElementById('weekBadge').textContent = 'Tydzień ' + Math.max(1, weeks);
+}
+
+function renderStats() {
+  const done = S.tasks.filter(t=>t.done).length;
+  const total = S.tasks.length;
+  const spent = S.expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const left = BUDGET_TOTAL - spent;
+  document.getElementById('sDone').textContent = done+'/'+total;
+  document.getElementById('sConvo').textContent = S.convos.length+'/15';
+  document.getElementById('sSpent').textContent = fmt(spent);
+  document.getElementById('sLeft').textContent = fmt(left);
+  document.getElementById('dBudgetSpent').textContent = fmt(spent)+' zł';
+  document.getElementById('dBudgetBar').style.width = Math.min(100,Math.round(spent/BUDGET_TOTAL*100))+'%';
+  document.getElementById('bLeft').textContent = fmt(left);
+  document.getElementById('convoNum').textContent = S.convos.length;
+  document.getElementById('convoBar').style.width = Math.min(100,Math.round(S.convos.length/15*100))+'%';
+}
+
+function fmt(n) { return Math.round(n).toLocaleString('pl-PL'); }
+
+function renderWeekTasks() {
+  const el = document.getElementById('weekTaskList');
+  const list = S.tasks.filter(t=>t.week);
+  if (!list.length) { el.innerHTML = '<div class="empty" style="padding:16px 0">Brak zadań tygodnia.</div>'; return; }
+  el.innerHTML = list.map(t => taskHTML(t)).join('');
+}
+
+function renderTasks() {
+  ['0','1','2'].forEach(p => {
+    const el = document.getElementById('tList'+p);
+    if (!el) return;
+    const key = p === '2' ? ['2','3','4','5'] : [p];
+    const list = S.tasks.filter(t=>key.includes(t.phase));
+    if (!list.length) { el.innerHTML = '<div class="empty" style="padding:16px 0">Brak zadań.</div>'; return; }
+    el.innerHTML = list.map(t => taskHTML(t)).join('');
+  });
+}
+
+function taskHTML(t) {
+  const prioClass = t.prio==='pilne' ? 'prio-red' : t.prio==='ważne' ? 'prio-orange' : 'prio-gray';
+  return `<div class="task-row">
+    <button class="chk ${t.done?'done':''}" onclick="toggleTask(${t.id})"></button>
+    <div class="task-body">
+      <div class="task-text ${t.done?'done':''}">${t.text}</div>
+      ${t.desc?`<div class="task-desc">${t.desc}</div>`:''}
+    </div>
+    <span class="prio-tag ${prioClass}">${t.prio}</span>
+  </div>`;
+}
+
+function toggleTask(id) {
+  const t = S.tasks.find(t=>t.id===id);
+  if (t) { t.done=!t.done; save(); }
+}
+
+function renderJournal() {
+  const el = document.getElementById('journalList');
+  if (!S.journal.length) { el.innerHTML = '<div class="empty"><div class="empty-ico">📓</div>Brak wpisów.<br>Kliknij + aby dodać.</div>'; return; }
+  el.innerHTML = [...S.journal].reverse().map(j=>`
+    <div class="jentry">
+      <div class="jmeta">
+        <span class="jdate">${j.date}</span>
+        <span class="jphase">${j.phase}</span>
+        ${j.mood?`<span class="jmood">nastrój ${j.mood}/5</span>`:''}
+      </div>
+      <div class="jtext">${j.text}</div>
+      ${j.result?`<div class="jresult">→ ${j.result}</div>`:''}
+    </div>`).join('');
+}
+
+function renderConvos() {
+  const el = document.getElementById('convoList');
+  if (!S.convos.length) { el.innerHTML = '<div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów.<br>Kliknij + po każdej rozmowie.</div>'; return; }
+  el.innerHTML = [...S.convos].reverse().map((c,i)=>`
+    <div class="jentry">
+      <div class="jmeta">
+        <span class="jdate">${c.date}</span>
+        <span class="jphase">Rozmowa #${S.convos.length - i}</span>
+        ${c.open?`<span class="jmood">otwartość ${c.open}/5</span>`:''}
+      </div>
+      <div class="jtext">${c.name} ${c.inst?'· '+c.inst:''}</div>
+      <div class="jresult">TCE: ${c.tce||'—'} | Problem: ${c.prob||'—'}</div>
+      ${c.quote?`<div class="jresult" style="font-style:italic">"${c.quote}"</div>`:''}
+    </div>`).join('');
+}
+
+const BASE_CONTACTS = [
+  {initials:'CTT',name:'CTT UW',role:'ctt@adm.uw.edu.pl · +48 22 55 24 009',prio:'crit'},
+  {initials:'MNW',name:'Muzeum Narodowe w Warszawie',role:'sekretariat@mnw.art.pl',prio:'crit'},
+  {initials:'MK', name:'prof. Marcin Karbarz',role:'karbarz@chem.uw.edu.pl · Wydział Chemii UW',prio:'crit'},
+  {initials:'EP', name:'Elżbieta Pilecka-Pietrusińska',role:'MNW — konserwator / współautorka patentu',prio:'crit'},
+];
+
+function renderContacts() {
+  const el = document.getElementById('contactList');
+  const all = [...BASE_CONTACTS, ...S.contacts];
+  el.innerHTML = all.map(c=>`
+    <div class="crow">
+      <div class="avatar">${c.initials || c.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+      <div style="flex:1;min-width:0">
+        <div class="cname">${c.name}</div>
+        <div class="crole">${c.role||''}</div>
+      </div>
+      <span class="cbadge ${c.prio==='crit'?'cbadge-crit':'cbadge-imp'}">${c.prio==='crit'?'Krytyczny':'Ważny'}</span>
+    </div>`).join('');
+}
+
+function renderExpenses() {
+  const el = document.getElementById('expList');
+  if (!S.expenses.length) { el.innerHTML = '<div class="empty"><div class="empty-ico">💰</div>Brak wydatków.<br>Kliknij + aby dodać.</div>'; return; }
+  el.innerHTML = [...S.expenses].reverse().map(e=>`
+    <div class="brow">
+      <div><div class="blabel">${e.desc}</div><div class="bsub">${e.date} · ${e.cat}</div></div>
+      <div class="bamount">${fmt(e.amount)} zł</div>
+    </div>`).join('');
+}
+
+function renderBudget() { /* handled in renderStats */ }
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+let currentTab = 'dashboard';
+function showTab(name, btn) {
+  currentTab = name;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── FAB ──────────────────────────────────────────────────────────────────────
+function onFab() {
+  const map = { dashboard:'journal', tasks:'task', journal:'journal',
+                convos:'convo', contacts:'contact', budget:'expense' };
+  openModal(map[currentTab] || 'journal');
+}
+
+// ── MODALS ───────────────────────────────────────────────────────────────────
+function openModal(type) {
+  const mc = document.getElementById('mContent');
+  const today = new Date().toISOString().slice(0,10);
+
+  if (type === 'journal') {
+    mc.innerHTML = `
+      <div class="modal-title">Nowy wpis w dzienniku</div>
+      <div class="hint">Zapisuj każde działanie — emaile, rozmowy, decyzje. Zaraz po, nie "później".</div>
+      <div class="field"><label>Data</label><input type="date" id="mDate" value="${today}"></div>
+      <div class="field"><label>Faza</label>
+        <select id="mPhase">
+          <option>FAZA 0 — Licencja</option><option>FAZA 1 — Walidacja</option>
+          <option>FAZA 2 — Strategia</option><option>FAZA 3 — Firma</option>
+          <option>FAZA 4 — Finansowanie</option><option>FAZA 5 — Pilotaż</option>
+          <option>CIĄGŁE</option>
+        </select>
+      </div>
+      <div class="field"><label>Co zrobiłem/am</label><textarea id="mText" placeholder="Opisz działanie szczegółowo..."></textarea></div>
+      <div class="field"><label>Wynik / odpowiedź</label><input type="text" id="mResult" placeholder="Co się wydarzyło? Jaka odpowiedź?"></div>
+      <div class="field"><label>Nastrój (1–5)</label><input type="number" id="mMood" min="1" max="5" value="3" style="width:80px"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="closeModal()">Anuluj</button>
+        <button class="btn btn-primary" onclick="saveJournal()">Zapisz</button>
+      </div>`;
+  } else if (type === 'task') {
+    mc.innerHTML = `
+      <div class="modal-title">Nowe zadanie</div>
+      <div class="field"><label>Zadanie</label><input type="text" id="mTask" placeholder="Co trzeba zrobić?"></div>
+      <div class="field"><label>Faza</label>
+        <select id="mTPhase">
+          <option value="0">Faza 0 — Licencja</option>
+          <option value="1">Faza 1 — Walidacja</option>
+          <option value="2">Faza 2+</option>
+        </select>
+      </div>
+      <div class="field"><label>Priorytet</label>
+        <select id="mTPrio">
+          <option value="pilne">Pilne</option>
+          <option value="ważne">Ważne</option>
+          <option value="normalne">Normalne</option>
+        </select>
+      </div>
+      <div class="field"><label>Szczegóły (opcja)</label><input type="text" id="mTDesc" placeholder="Jak to zrobić? Gdzie szukać?"></div>
+      <div class="field" style="display:flex;align-items:center;gap:10px">
+        <input type="checkbox" id="mTWeek" style="width:18px;height:18px">
+        <label for="mTWeek" style="text-transform:none;font-size:14px;letter-spacing:0;color:var(--text)">Dodaj do zadań tego tygodnia</label>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="closeModal()">Anuluj</button>
+        <button class="btn btn-primary" onclick="saveTask()">Dodaj</button>
+      </div>`;
+  } else if (type === 'convo') {
+    mc.innerHTML = `
+      <div class="modal-title">Rozmowa z konserwatorem</div>
+      <div class="hint">Wypełnij zaraz po rozmowie. Każdy wpis = +1 do licznika (cel: 15).</div>
+      <div class="field"><label>Imię i nazwisko</label><input type="text" id="mCvName" placeholder="Jan Kowalski"></div>
+      <div class="field"><label>Instytucja</label><input type="text" id="mCvInst" placeholder="Muzeum Narodowe / prywatny"></div>
+      <div class="field"><label>Data</label><input type="date" id="mCvDate" value="${today}"></div>
+      <div class="field"><label>Czy używa TCE?</label>
+        <select id="mCvTCE"><option>Tak</option><option>Nie</option><option>Czasami</option><option>Nie wiem</option></select>
+      </div>
+      <div class="field"><label>Główny problem z usuwaniem wosku</label><input type="text" id="mCvProb" placeholder="Co jest najtrudniejsze?"></div>
+      <div class="field"><label>Otwartość na nowe rozwiązanie (1–5)</label><input type="number" id="mCvOpen" min="1" max="5" value="3" style="width:80px"></div>
+      <div class="field"><label>Kluczowy cytat (opcja)</label><input type="text" id="mCvQuote" placeholder="Dosłowne słowa rozmówcy..."></div>
+      <div class="field"><label>Następny krok</label><input type="text" id="mCvNext" placeholder="Co ustaliliście?"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="closeModal()">Anuluj</button>
+        <button class="btn btn-primary" onclick="saveConvo()">Zapisz rozmowę</button>
+      </div>`;
+  } else if (type === 'contact') {
+    mc.innerHTML = `
+      <div class="modal-title">Nowy kontakt</div>
+      <div class="field"><label>Imię i nazwisko</label><input type="text" id="mCtName" placeholder="Jan Kowalski"></div>
+      <div class="field"><label>Organizacja / email / tel.</label><input type="text" id="mCtRole" placeholder="Muzeum / jan@example.com"></div>
+      <div class="field"><label>Priorytet relacji</label>
+        <select id="mCtPrio"><option value="crit">Krytyczny</option><option value="imp">Ważny</option></select>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="closeModal()">Anuluj</button>
+        <button class="btn btn-primary" onclick="saveContact()">Dodaj</button>
+      </div>`;
+  } else if (type === 'expense') {
+    mc.innerHTML = `
+      <div class="modal-title">Nowy wydatek</div>
+      <div class="field"><label>Opis</label><input type="text" id="mEDesc" placeholder="np. Konsultacja prawnika IP"></div>
+      <div class="field"><label>Kwota (zł)</label><input type="number" id="mEAmt" placeholder="0" min="0" step="1"></div>
+      <div class="field"><label>Kategoria</label>
+        <select id="mECat">
+          <option>Prawnik / licencja</option><option>Odczynniki chemiczne</option>
+          <option>Rejestracja firmy</option><option>Podróże / spotkania</option>
+          <option>Marketing</option><option>Inne</option>
+        </select>
+      </div>
+      <div class="field"><label>Data</label><input type="date" id="mEDate" value="${today}"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="closeModal()">Anuluj</button>
+        <button class="btn btn-primary" onclick="saveExpense()">Zapisz</button>
+      </div>`;
+  }
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function maybeClose(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
+
+// ── SAVE ACTIONS ─────────────────────────────────────────────────────────────
+function saveJournal() {
+  const text = document.getElementById('mText').value.trim();
+  if (!text) { alert('Wpisz treść działania.'); return; }
+  S.journal.push({
+    date: document.getElementById('mDate').value,
+    phase: document.getElementById('mPhase').value,
+    text, result: document.getElementById('mResult').value,
+    mood: document.getElementById('mMood').value,
+  });
+  save(); closeModal();
+}
+
+function saveTask() {
+  const text = document.getElementById('mTask').value.trim();
+  if (!text) { alert('Wpisz treść zadania.'); return; }
+  S.tasks.push({
+    id: S.nid++, phase: document.getElementById('mTPhase').value,
+    text, desc: document.getElementById('mTDesc').value,
+    prio: document.getElementById('mTPrio').value,
+    done: false, week: document.getElementById('mTWeek').checked,
+  });
+  save(); closeModal();
+}
+
+function saveConvo() {
+  const name = document.getElementById('mCvName').value.trim();
+  if (!name) { alert('Wpisz imię rozmówcy.'); return; }
+  S.convos.push({
+    name, inst: document.getElementById('mCvInst').value,
+    date: document.getElementById('mCvDate').value,
+    tce: document.getElementById('mCvTCE').value,
+    prob: document.getElementById('mCvProb').value,
+    open: document.getElementById('mCvOpen').value,
+    quote: document.getElementById('mCvQuote').value,
+    next: document.getElementById('mCvNext').value,
+  });
+  save(); closeModal();
+}
+
+function saveContact() {
+  const name = document.getElementById('mCtName').value.trim();
+  if (!name) return;
+  S.contacts.push({
+    name, role: document.getElementById('mCtRole').value,
+    prio: document.getElementById('mCtPrio').value,
+  });
+  save(); closeModal();
+}
+
+function saveExpense() {
+  const desc = document.getElementById('mEDesc').value.trim();
+  const amount = parseFloat(document.getElementById('mEAmt').value);
+  if (!desc || !amount) { alert('Wpisz opis i kwotę.'); return; }
+  S.expenses.push({
+    desc, amount, cat: document.getElementById('mECat').value,
+    date: document.getElementById('mEDate').value,
+  });
+  save(); closeModal();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+load();
+render();
+</script>
+</body>
+</html>
