@@ -4,103 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1F3864">
 <title>Centrum Sterowania — Patent EP 4 164 895 B1</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #F0F2F5; color: #111; -webkit-tap-highlight-color: transparent;
-}
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F0F2F5; color: #111; -webkit-tap-highlight-color: transparent; }
 :root {
   --navy: #1F3864; --blue: #2E75B6; --lblue: #D6E4F0;
   --border: #E0E0E0; --text: #111; --text2: #555; --text3: #999;
   --surface: #fff; --surface2: #F7F8FA; --radius: 12px; --radius-sm: 8px;
+  --green: #52A843; --red: #E24B4A; --orange: #EF9F27;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --navy:#1a3057; --blue:#4A9FD4; --lblue:#1e3a5f; --border:#2a2a2a;
-    --text:#F0F0F0; --text2:#aaa; --text3:#666; --surface:#1C1C1E; --surface2:#2C2C2E; }
+  :root { --navy:#1a3057; --blue:#4A9FD4; --lblue:#1e3a5f; --border:#2a2a2a; --text:#F0F0F0; --text2:#aaa; --text3:#666; --surface:#1C1C1E; --surface2:#2C2C2E; }
   body { background: #000; }
 }
-
-/* ── LOGIN SCREEN ── */
-.login-wrap {
-  min-height: 100dvh; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; padding: 24px;
-}
-.login-logo {
-  background: var(--navy); color: #fff;
-  width: 64px; height: 64px; border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; margin-bottom: 20px;
-}
+.login-wrap { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+.login-logo { background: var(--navy); color: #fff; width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
 .login-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 6px; text-align: center; }
 .login-sub { font-size: 14px; color: var(--text3); margin-bottom: 32px; text-align: center; }
-.login-card {
-  background: var(--surface); border-radius: var(--radius);
-  border: 1px solid var(--border); padding: 24px; width: 100%; max-width: 360px;
-}
-.login-err {
-  background: #FCEBEB; color: #A32D2D; border-radius: var(--radius-sm);
-  padding: 10px 14px; font-size: 13px; margin-bottom: 14px; display: none;
-}
-
-/* ── APP ── */
-.app {
-  max-width: 430px; margin: 0 auto; height: 100dvh;
-  display: flex; flex-direction: column; background: var(--surface2);
-  position: relative; overflow: hidden;
-}
-.topbar {
-  background: var(--navy); padding: 52px 16px 14px;
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
+.login-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; width: 100%; max-width: 360px; }
+.login-err { background: #FCEBEB; color: #A32D2D; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; margin-bottom: 14px; display: none; }
+.app { max-width: 430px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; background: var(--surface2); position: relative; overflow: hidden; }
+.topbar { background: var(--navy); padding: 52px 16px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .topbar-title { font-size: 17px; font-weight: 600; color: #fff; }
 .topbar-sub { font-size: 11px; color: #9DC3E6; margin-top: 2px; }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
-.week-badge {
-  background: rgba(255,255,255,0.15); color: #fff;
-  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
-}
-.logout-btn {
-  background: rgba(255,255,255,0.1); color: #fff; border: none;
-  font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor: pointer;
-  font-family: inherit;
-}
-.tabs {
-  display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
-  flex-shrink: 0; overflow-x: auto; scrollbar-width: none;
-}
+.week-badge { background: rgba(255,255,255,0.15); color: #fff; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+.logout-btn { background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor: pointer; font-family: inherit; }
+.tabs-wrap { background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; position: relative; }
+.tabs { display: flex; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
 .tabs::-webkit-scrollbar { display: none; }
-.tab {
-  flex: 0 0 auto; padding: 12px 16px; font-size: 13px; font-weight: 500;
-  color: var(--text2); cursor: pointer; border: none;
-  border-bottom: 2.5px solid transparent; background: none;
-  white-space: nowrap; transition: color 0.15s; font-family: inherit;
-}
+.tab { flex: 0 0 auto; padding: 12px 14px; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; border: none; border-bottom: 2.5px solid transparent; background: none; white-space: nowrap; transition: color 0.15s; font-family: inherit; }
 .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
-.screen {
-  display: none; flex: 1; overflow-y: auto; padding: 12px;
-  -webkit-overflow-scrolling: touch; padding-bottom: 80px;
-}
+.tabs-scroll-track { height: 3px; background: var(--surface2); margin: 0 12px 6px; border-radius: 2px; position: relative; cursor: pointer; }
+.tabs-scroll-thumb { height: 3px; background: var(--blue); border-radius: 2px; position: absolute; top: 0; left: 0; transition: width 0.1s; cursor: grab; min-width: 24px; opacity: 0.6; }
+.tabs-scroll-thumb:active { cursor: grabbing; opacity: 1; }
+.screen { display: none; flex: 1; overflow-y: auto; padding: 12px; -webkit-overflow-scrolling: touch; padding-bottom: 80px; }
 .screen.active { display: block; }
-.card {
-  background: var(--surface); border-radius: var(--radius);
-  border: 1px solid var(--border); padding: 14px; margin-bottom: 10px;
-}
-.card-title {
-  font-size: 11px; font-weight: 600; color: var(--text3);
-  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px;
-}
+.card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 14px; margin-bottom: 10px; }
+.card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px; }
 .stat-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
 .stat { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 12px; }
 .stat-label { font-size: 11px; color: var(--text3); }
 .stat-value { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 3px; }
-.phase-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 0; border-bottom: 1px solid var(--border);
-}
+.phase-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .phase-row:last-child { border-bottom: none; }
 .phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .dot-red { background: #E24B4A; } .dot-yellow { background: #EF9F27; } .dot-green { background: #52A843; }
@@ -111,17 +59,9 @@ html, body {
 .tag-green { background: #EAF3DE; color: #3B6D11; }
 .task-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
 .task-row:last-child { border-bottom: none; }
-.chk {
-  width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border);
-  flex-shrink: 0; cursor: pointer; background: none; margin-top: 1px;
-  display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-}
+.chk { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); flex-shrink: 0; cursor: pointer; background: none; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
 .chk.done { background: #52A843; border-color: #52A843; }
-.chk.done::after {
-  content: ''; display: block; width: 5px; height: 9px;
-  border: 2px solid #fff; border-top: none; border-left: none;
-  transform: rotate(45deg) translate(-1px,-1px);
-}
+.chk.done::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); }
 .task-body { flex: 1; min-width: 0; }
 .task-text { font-size: 14px; color: var(--text); line-height: 1.4; }
 .task-text.done { text-decoration: line-through; color: var(--text3); }
@@ -130,10 +70,7 @@ html, body {
 .prio-red { background: #FCEBEB; color: #A32D2D; }
 .prio-orange { background: #FAEEDA; color: #854F0B; }
 .prio-gray { background: var(--surface2); color: var(--text3); }
-.section-lbl {
-  font-size: 11px; font-weight: 600; color: var(--text3);
-  text-transform: uppercase; letter-spacing: 0.6px; margin: 16px 0 8px 2px;
-}
+.section-lbl { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin: 16px 0 8px 2px; }
 .jentry { padding: 10px 0; border-bottom: 1px solid var(--border); }
 .jentry:last-child { border-bottom: none; }
 .jmeta { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; flex-wrap: wrap; }
@@ -145,16 +82,13 @@ html, body {
 .jresult { font-size: 12px; color: var(--text2); margin-top: 4px; }
 .crow { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .crow:last-child { border-bottom: none; }
-.avatar {
-  width: 40px; height: 40px; border-radius: 50%; background: var(--lblue);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: #185FA5; flex-shrink: 0;
-}
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--lblue); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #185FA5; flex-shrink: 0; }
 .cname { font-size: 14px; font-weight: 500; color: var(--text); }
 .crole { font-size: 12px; color: var(--text2); margin-top: 1px; }
 .cbadge { margin-left: auto; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; }
 .cbadge-crit { background: #FCEBEB; color: #A32D2D; }
 .cbadge-imp { background: #FAEEDA; color: #854F0B; }
+.cbadge-info { background: #D6E4F0; color: #1F3864; }
 .brow { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
 .brow:last-child { border-bottom: none; }
 .blabel { font-size: 14px; color: var(--text); }
@@ -164,42 +98,19 @@ html, body {
 .progress-bar { height: 100%; border-radius: 20px; background: var(--blue); transition: width 0.4s ease; }
 .empty { text-align: center; padding: 36px 16px; color: var(--text3); font-size: 14px; }
 .empty-ico { font-size: 32px; margin-bottom: 10px; }
-.add-btn {
-  width: 100%; padding: 10px; border-radius: var(--radius-sm);
-  border: 1.5px dashed var(--border); background: none; color: var(--text3);
-  font-size: 14px; cursor: pointer; margin-top: 8px; font-family: inherit;
-}
+.add-btn { width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1.5px dashed var(--border); background: none; color: var(--text3); font-size: 14px; cursor: pointer; margin-top: 8px; font-family: inherit; }
 .add-btn:active { background: var(--surface2); }
-.fab {
-  position: fixed; bottom: 24px; right: calc(50% - 205px);
-  width: 52px; height: 52px; border-radius: 50%; background: var(--navy);
-  color: #fff; font-size: 26px; border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.22); z-index: 50;
-  transition: transform 0.15s; font-family: inherit;
-}
+.fab { position: fixed; bottom: 24px; right: calc(50% - 205px); width: 52px; height: 52px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 26px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0,0,0,0.22); z-index: 50; transition: transform 0.15s; font-family: inherit; }
 .fab:active { transform: scale(0.93); }
 @media (max-width: 430px) { .fab { right: 16px; } }
-.overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.45); z-index: 100;
-  align-items: flex-end; justify-content: center;
-}
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: flex-end; justify-content: center; }
 .overlay.open { display: flex; }
-.modal {
-  background: var(--surface); border-radius: 20px 20px 0 0;
-  padding: 16px 16px 40px; width: 100%; max-width: 430px;
-  max-height: 90dvh; overflow-y: auto;
-}
+.modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 16px 16px 40px; width: 100%; max-width: 430px; max-height: 90dvh; overflow-y: auto; }
 .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
 .modal-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
-.field input, .field select, .field textarea {
-  width: 100%; font-size: 15px; padding: 11px 14px; border-radius: var(--radius-sm);
-  border: 1px solid var(--border); background: var(--surface2); color: var(--text);
-  font-family: inherit; -webkit-appearance: none;
-}
+.field input, .field select, .field textarea { width: 100%; font-size: 15px; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-family: inherit; -webkit-appearance: none; }
 .field textarea { resize: none; height: 90px; line-height: 1.5; }
 .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--blue); }
 .hint { font-size: 11px; color: var(--text3); background: var(--surface2); border-radius: var(--radius-sm); padding: 9px 12px; margin-bottom: 14px; line-height: 1.5; }
@@ -207,12 +118,9 @@ html, body {
 .btn { flex: 1; padding: 12px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-family: inherit; transition: all 0.15s; }
 .btn:active { transform: scale(0.97); }
 .btn-primary { background: var(--navy); color: #fff; border-color: var(--navy); }
-.sync-badge {
-  position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-  background: #52A843; color: #fff; font-size: 12px; font-weight: 600;
-  padding: 6px 16px; border-radius: 20px; z-index: 200;
-  opacity: 0; transition: opacity 0.3s; pointer-events: none;
-}
+.btn-green { background: #52A843; color: #fff; border-color: #52A843; }
+.btn-danger { background: #E24B4A; color: #fff; border-color: #E24B4A; }
+.sync-badge { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); background: #52A843; color: #fff; font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 20px; z-index: 200; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 .sync-badge.show { opacity: 1; }
 .convo-ring { display: flex; flex-direction: column; align-items: center; padding: 12px 0; }
 .ring-num { font-size: 40px; font-weight: 700; color: var(--blue); }
@@ -221,27 +129,123 @@ html, body {
 .progress-wrap-lg { background: var(--surface2); border-radius: 20px; height: 12px; overflow: hidden; margin: 12px 0 4px; }
 .progress-bar-lg { height: 100%; border-radius: 20px; background: var(--blue); transition: width 0.4s ease; }
 .ring-steps { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
-.loading-screen {
-  min-height: 100dvh; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 16px;
-}
-.spinner {
-  width: 36px; height: 36px; border: 3px solid var(--border);
-  border-top-color: var(--blue); border-radius: 50;
-  animation: spin 0.8s linear infinite;
-}
+.loading-screen { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* CALENDAR */
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-nav { background: none; border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; font-size: 18px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; font-family: inherit; }
+.cal-month { font-size: 16px; font-weight: 600; color: var(--text); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-day-hdr { font-size: 11px; font-weight: 600; color: var(--text3); text-align: center; padding: 4px 0; }
+.cal-day { min-height: 38px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 4px 2px; cursor: pointer; position: relative; }
+.cal-day:hover { background: var(--surface2); }
+.cal-day.today { background: var(--lblue); }
+.cal-day.today .cal-day-num { color: var(--blue); font-weight: 700; }
+.cal-day-num { font-size: 13px; color: var(--text); }
+.cal-day.other-month .cal-day-num { color: var(--text3); }
+.cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); margin-top: 2px; }
+.cal-dot-red { background: #E24B4A; }
+.cal-dot-green { background: #52A843; }
+.cal-event-list { margin-top: 12px; }
+.cal-event { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.cal-event:last-child { border-bottom: none; }
+.cal-event-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.cal-event-text { font-size: 14px; color: var(--text); line-height: 1.4; }
+.cal-event-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* PLAN DZIAŁANIA */
+.plan-phase { margin-bottom: 16px; }
+.plan-phase-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--navy); border-radius: var(--radius-sm); cursor: pointer; }
+.plan-phase-title { font-size: 14px; font-weight: 600; color: #fff; }
+.plan-phase-progress { font-size: 12px; color: #9DC3E6; }
+.plan-steps { background: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm); }
+.plan-step { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.plan-step:last-child { border-bottom: none; }
+.step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--lblue); color: #185FA5; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-num.done { background: #EAF3DE; color: #3B6D11; }
+.step-body { flex: 1; }
+.step-title { font-size: 14px; color: var(--text); font-weight: 500; }
+.step-desc { font-size: 12px; color: var(--text3); margin-top: 3px; line-height: 1.4; }
+.step-deadline { font-size: 11px; color: var(--orange); margin-top: 3px; font-weight: 500; }
+
+/* WIADOMOŚCI */
+.msg-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.msg-row:last-child { border-bottom: none; }
+.msg-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.msg-email { background: #D6E4F0; }
+.msg-sms { background: #EAF3DE; }
+.msg-linkedin { background: #FAEEDA; }
+.msg-body { flex: 1; min-width: 0; }
+.msg-to { font-size: 13px; font-weight: 500; color: var(--text); }
+.msg-subject { font-size: 12px; color: var(--text2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.msg-date { font-size: 11px; color: var(--text3); }
+.msg-status { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; margin-left: auto; flex-shrink: 0; }
+.status-sent { background: #EAF3DE; color: #3B6D11; }
+.status-draft { background: #FAEEDA; color: #854F0B; }
+.status-waiting { background: #D6E4F0; color: #185FA5; }
+
+/* AI NOTATKA */
+.ai-input { width: 100%; font-size: 14px; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-family: inherit; resize: none; height: 160px; line-height: 1.6; }
+.ai-input:focus { outline: none; border-color: var(--blue); }
+.ai-result { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; font-size: 13px; color: var(--text2); line-height: 1.6; margin-top: 10px; display: none; }
+.ai-result.show { display: block; }
+.ai-spinner { display: none; align-items: center; gap: 8px; padding: 10px 0; font-size: 13px; color: var(--text3); }
+.ai-spinner.show { display: flex; }
+.ai-mini-spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+/* CONTACT PHONE */
+.contact-phone { font-size: 13px; color: var(--blue); font-weight: 500; }
+.contact-notes { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.contact-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
+.ctag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; background: var(--lblue); color: #185FA5; }
+
+/* HISTORIA ZMIAN */
+.hentry { padding: 11px 0; border-bottom: 1px solid var(--border); }
+.hentry:last-child { border-bottom: none; }
+.hmeta { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
+.htime { font-size: 11px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.htype { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.htype-add { background: #EAF3DE; color: #3B6D11; }
+.htype-edit { background: #D6E4F0; color: #185FA5; }
+.htype-del { background: #FCEBEB; color: #A32D2D; }
+.htype-task { background: #FAEEDA; color: #854F0B; }
+.hwho { font-size: 10px; color: var(--text3); font-style: italic; }
+.hdesc { font-size: 13px; color: var(--text); line-height: 1.4; }
+.hrestore { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--text2); cursor: pointer; font-family: inherit; margin-top: 6px; }
+.hrestore:active { background: var(--surface2); }
+.hday-sep { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 6px; }
+.hday-sep:first-child { border-top: none; margin-top: 0; }
+.report-box { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; font-size: 12px; color: var(--text2); line-height: 1.7; font-family: monospace; white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow-y: auto; margin-top: 10px; display: none; }
+.report-box.show { display: block; }
+
+/* ZESPÓŁ */
+.user-row { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.user-row:last-child { border-bottom:none; }
+.user-avatar { width:38px; height:38px; border-radius:50%; background:var(--lblue); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#185FA5; flex-shrink:0; }
+.user-name { font-size:14px; font-weight:500; color:var(--text); }
+.user-email { font-size:11px; color:var(--text3); margin-top:1px; }
+.user-role-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; background:#FAEEDA; color:#854F0B; margin-top:3px; display:inline-block; }
+.user-role-badge.admin { background:#EAF3DE; color:#3B6D11; }
+.tabs-selector { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.tab-toggle { font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; border:1.5px solid var(--border); background:var(--surface2); color:var(--text3); cursor:pointer; font-family:inherit; transition:all 0.15s; }
+.tab-toggle.on { background:#D6E4F0; color:#185FA5; border-color:#2E75B6; }
+.invite-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); }
+.invite-row:last-child { border-bottom:none; }
+.invite-code { font-size:14px; font-weight:700; letter-spacing:2px; color:var(--text); font-family:monospace; }
+.invite-meta { font-size:11px; color:var(--text3); margin-top:2px; }
+.invite-used { color:var(--text3); text-decoration:line-through; }
+.copy-btn { font-size:11px; padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:none; color:var(--blue); cursor:pointer; font-family:inherit; }
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading-screen" id="loadingScreen">
   <div class="spinner" style="border-radius:50%"></div>
   <div style="font-size:14px;color:var(--text3)">Ładowanie...</div>
 </div>
 
-<!-- LOGIN -->
 <div class="login-wrap" id="loginScreen" style="display:none">
   <div class="login-logo">🧪</div>
   <div class="login-title">Centrum Sterowania</div>
@@ -258,24 +262,23 @@ html, body {
   </div>
 </div>
 
-<!-- REGISTER -->
 <div class="login-wrap" id="registerScreen" style="display:none">
   <div class="login-logo">🧪</div>
   <div class="login-title">Nowe konto</div>
-  <div class="login-sub">Tylko dla zaproszonych współpracowników</div>
+  <div class="login-sub">Wymagany kod zaproszenia od administratora</div>
   <div class="login-card">
     <div class="login-err" id="registerErr"></div>
-    <div class="field"><label>Imię</label><input type="text" id="regName" placeholder="Jan Kowalski"></div>
+    <div class="field"><label>Kod zaproszenia</label><input type="text" id="regCode" placeholder="np. ORGANO-2026" autocomplete="off" style="letter-spacing:2px;font-weight:600"></div>
+    <div class="field"><label>Imię i nazwisko</label><input type="text" id="regName" placeholder="Jan Kowalski"></div>
     <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="twoj@email.com"></div>
     <div class="field"><label>Hasło (min. 6 znaków)</label><input type="password" id="regPass" placeholder="••••••••"></div>
     <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="doRegister()">Zarejestruj się</button>
     <div style="text-align:center;margin-top:14px">
-      <button onclick="showLogin()" style="background:none;border:none;color:var(--blue);font-size:13px;cursor:pointer;font-family:inherit">← Wróć do logowania</button>
+      <button onclick="showLogin()" style="background:none;border:none;color:var(--blue);font-size:13px;cursor:pointer;font-family:inherit">← Wróć</button>
     </div>
   </div>
 </div>
 
-<!-- APP -->
 <div class="app" id="appScreen" style="display:none">
   <div class="sync-badge" id="syncBadge">✓ Zapisano</div>
   <div class="topbar">
@@ -289,13 +292,22 @@ html, body {
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('dashboard',this)">Dashboard</button>
-    <button class="tab" onclick="showTab('tasks',this)">Zadania</button>
-    <button class="tab" onclick="showTab('journal',this)">Dziennik</button>
-    <button class="tab" onclick="showTab('convos',this)">Rozmowy</button>
-    <button class="tab" onclick="showTab('contacts',this)">Kontakty</button>
-    <button class="tab" onclick="showTab('budget',this)">Budżet</button>
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabsBar">
+      <button class="tab active" onclick="showTab('dashboard',this)" data-tab="dashboard">Dashboard</button>
+      <button class="tab" onclick="showTab('plan',this)" data-tab="plan">📋 Plan</button>
+      <button class="tab" onclick="showTab('calendar',this)" data-tab="calendar">📅 Kalendarz</button>
+      <button class="tab" onclick="showTab('tasks',this)" data-tab="tasks">Zadania</button>
+      <button class="tab" onclick="showTab('journal',this)" data-tab="journal">Dziennik</button>
+      <button class="tab" onclick="showTab('convos',this)" data-tab="convos">Rozmowy</button>
+      <button class="tab" onclick="showTab('contacts',this)" data-tab="contacts">📞 Kontakty</button>
+      <button class="tab" onclick="showTab('messages',this)" data-tab="messages">✉️ Wiadomości</button>
+      <button class="tab" onclick="showTab('ai',this)" data-tab="ai">🤖 Notatka AI</button>
+      <button class="tab" onclick="showTab('budget',this)" data-tab="budget">Budżet</button>
+      <button class="tab" onclick="showTab('historia',this)" data-tab="historia">🕓 Historia</button>
+      <button class="tab" onclick="showTab('zespol',this)" data-tab="zespol" id="tabZespol" style="display:none">👥 Zespół</button>
+    </div>
+    <div class="tabs-scroll-track" id="tabsTrack"><div class="tabs-scroll-thumb" id="tabsThumb"></div></div>
   </div>
 
   <!-- DASHBOARD -->
@@ -308,14 +320,16 @@ html, body {
     </div>
     <div class="card">
       <div class="card-title">Status faz projektu</div>
-      <div id="phaseList">
-        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 0 — Licencja (CTT UW + MNW)</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
-        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 1 — Walidacja rynku</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
-        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 2 — Model biznesowy</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
-        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 3 — Rejestracja firmy</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
-        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 4 — Finansowanie</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
-        <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 5 — Pilotaż</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
-      </div>
+      <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 0 — Licencja (CTT UW + MNW)</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+      <div class="phase-row"><div class="phase-dot dot-yellow"></div><span class="phase-name">Faza 1 — Walidacja rynku</span><span class="phase-tag tag-yellow">W toku</span></div>
+      <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 2 — Model biznesowy</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+      <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 3 — Rejestracja firmy</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+      <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 4 — Finansowanie</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+      <div class="phase-row"><div class="phase-dot dot-red"></div><span class="phase-name">Faza 5 — Pilotaż</span><span class="phase-tag tag-red">Nie zaczęta</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Najbliższe wydarzenia</div>
+      <div id="dashUpcoming"><div class="empty" style="padding:12px 0">Brak wydarzeń.</div></div>
     </div>
     <div class="card">
       <div class="card-title">Ten tydzień — do zrobienia</div>
@@ -324,16 +338,34 @@ html, body {
     </div>
     <div class="card">
       <div class="card-title">Budżet</div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline">
-        <span style="font-size:13px;color:var(--text3)">Wydano</span>
-        <span style="font-size:18px;font-weight:600" id="dBudgetSpent">0 zł</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;color:var(--text3)">Wydano</span><span style="font-size:18px;font-weight:600" id="dBudgetSpent">0 zł</span></div>
       <div class="progress-wrap"><div class="progress-bar" id="dBudgetBar" style="width:0%"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:5px">
-        <span style="font-size:11px;color:var(--text3)">0 zł</span>
-        <span style="font-size:11px;color:var(--text3)">50 000 zł</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:11px;color:var(--text3)">0 zł</span><span style="font-size:11px;color:var(--text3)">50 000 zł</span></div>
     </div>
+  </div>
+
+  <!-- PLAN DZIAŁANIA -->
+  <div id="tab-plan" class="screen">
+    <div class="hint" style="margin-bottom:12px">📋 Strategiczny plan projektu — kolejne kroki do uruchomienia firmy.</div>
+    <div id="planContent"></div>
+    <button class="add-btn" onclick="openModal('planstep')">+ dodaj krok do planu</button>
+  </div>
+
+  <!-- KALENDARZ -->
+  <div id="tab-calendar" class="screen">
+    <div class="card">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="calNav(-1)">‹</button>
+        <div class="cal-month" id="calMonthLabel"></div>
+        <button class="cal-nav" onclick="calNav(1)">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title" id="calSelectedLabel">Wybierz dzień</div>
+      <div id="calEventList"><div class="empty" style="padding:12px 0">Kliknij dzień aby zobaczyć wydarzenia.</div></div>
+    </div>
+    <button class="add-btn" onclick="openModal('event')">+ dodaj wydarzenie</button>
   </div>
 
   <!-- ZADANIA -->
@@ -367,7 +399,7 @@ html, body {
     </div>
     <div class="card" style="padding:10px 14px">
       <div class="card-title">Lista rozmów</div>
-      <div id="convoList"><div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów. Kliknij + po każdej rozmowie.</div></div>
+      <div id="convoList"><div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów.</div></div>
     </div>
     <button class="add-btn" onclick="openModal('convo')">+ dodaj rozmowę z konserwatorem</button>
   </div>
@@ -378,6 +410,44 @@ html, body {
     <button class="add-btn" onclick="openModal('contact')">+ nowy kontakt</button>
   </div>
 
+  <!-- WIADOMOŚCI -->
+  <div id="tab-messages" class="screen">
+    <div class="card" style="padding:10px 14px">
+      <div class="card-title">Wysłane wiadomości i maile</div>
+      <div id="messageList"><div class="empty"><div class="empty-ico">✉️</div>Brak wiadomości. Kliknij + aby dodać.</div></div>
+    </div>
+    <button class="add-btn" onclick="openModal('message')">+ dodaj wysłaną wiadomość</button>
+  </div>
+
+  <!-- AI NOTATKA -->
+  <div id="tab-ai" class="screen">
+    <div class="card">
+      <div class="card-title">🤖 Przetwarzanie notatki dziennej</div>
+      <div class="hint">Wklej surową notatkę z dnia (np. z rozmów, spotkań, ustaleń). AI automatycznie doda wpisy do Dziennika, Kontaktów i Kalendarza.</div>
+      <textarea class="ai-input" id="aiNoteInput" placeholder="Wklej notatkę tutaj...
+
+Przykład:
+12.05.2026
+Zadzwoniłem do Jana Kowalskiego (restaurator, Kraków, tel. 601123456). Jest zainteresowany produktem, umówiłem się na spotkanie 20.05 o 14:00..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-primary" onclick="processAINote()" style="flex:2">🤖 Przetwórz notatkę</button>
+        <button class="btn" onclick="document.getElementById('aiNoteInput').value=''" style="flex:1">Wyczyść</button>
+      </div>
+      <div class="ai-spinner" id="aiSpinner"><div class="ai-mini-spinner"></div><span>AI przetwarza notatkę...</span></div>
+      <div class="ai-result" id="aiResult"></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="card-title">Jak to działa?</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">
+        1. Wklej surową notatkę z dnia<br>
+        2. AI wyciągnie: kontakty (imię, telefon, instytucja), spotkania/daty, ustalenia<br>
+        3. Zatwierdź i AI automatycznie doda do Dziennika i Kontaktów<br>
+        4. Daty trafią do Kalendarza<br><br>
+        <strong>Wskazówka:</strong> Im więcej szczegółów w notatce, tym lepiej AI przetworzy.
+      </div>
+    </div>
+  </div>
+
   <!-- BUDŻET -->
   <div id="tab-budget" class="screen">
     <div class="stat-row">
@@ -386,9 +456,45 @@ html, body {
     </div>
     <div class="card" style="padding:10px 14px">
       <div class="card-title">Wydatki</div>
-      <div id="expList"><div class="empty"><div class="empty-ico">💰</div>Brak wydatków. Kliknij + aby dodać.</div></div>
+      <div id="expList"><div class="empty"><div class="empty-ico">💰</div>Brak wydatków.</div></div>
     </div>
     <button class="add-btn" onclick="openModal('expense')">+ nowy wydatek</button>
+  </div>
+
+  <!-- HISTORIA ZMIAN -->
+  <div id="tab-historia" class="screen">
+    <div class="card">
+      <div class="card-title">Raport i eksport</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="generateReport()" style="flex:1;min-width:120px">📋 Raport dzienny</button>
+        <button class="btn" onclick="exportJSON()" style="flex:1;min-width:120px">⬇️ Backup JSON</button>
+      </div>
+      <div class="report-box" id="reportBox"></div>
+      <div id="reportMailRow" style="display:none;margin-top:8px">
+        <button class="btn btn-green" onclick="sendReportMail()" style="width:100%">✉️ Otwórz w kliencie email</button>
+      </div>
+    </div>
+    <div class="card" style="padding:10px 14px">
+      <div class="card-title">Historia zmian <span id="histCount" style="font-weight:400;color:var(--text3)"></span></div>
+      <div id="histList"><div class="empty"><div class="empty-ico">🕓</div>Brak historii. Zmiany pojawią się tu natychmiast.</div></div>
+    </div>
+  </div>
+
+  <!-- ZESPÓŁ -->
+  <div id="tab-zespol" class="screen">
+    <div class="card">
+      <div class="card-title">Kody zaproszeń</div>
+      <div class="hint" style="margin-bottom:10px">Wygeneruj kod i podaj go osobie którą chcesz zaprosić. Każdy kod jest jednorazowy — po użyciu wygasa.</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input type="text" id="newCodeInput" placeholder="np. MARTA-2026" style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:14px;letter-spacing:1px;text-transform:uppercase">
+        <button class="btn btn-primary" onclick="generateInviteCode()" style="flex:0 0 auto;padding:10px 16px">Generuj</button>
+      </div>
+      <div id="inviteCodeList"><div style="font-size:13px;color:var(--text3)">Brak aktywnych kodów.</div></div>
+    </div>
+    <div class="card" style="padding:10px 14px">
+      <div class="card-title">Użytkownicy <span id="userCount" style="font-weight:400;color:var(--text3)"></span></div>
+      <div id="userList"><div class="empty" style="padding:16px 0">Ładowanie...</div></div>
+    </div>
   </div>
 </div>
 
@@ -401,11 +507,10 @@ html, body {
   </div>
 </div>
 
-<!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA3r0ZPci1SCh5Wx1a51IAZlrVnBra3TxY",
@@ -413,8 +518,7 @@ const firebaseConfig = {
   projectId: "centrum-sterowaniafin",
   storageBucket: "centrum-sterowaniafin.firebasestorage.app",
   messagingSenderId: "273829344902",
-  appId: "1:273829344902:web:b94ed4930b7286ae628307",
-  measurementId: "G-W77CMV58KQ"
+  appId: "1:273829344902:web:b94ed4930b7286ae628307"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -425,22 +529,125 @@ const BUDGET_TOTAL = 50000;
 let currentUser = null;
 let unsubscribe = null;
 
-const DEFAULT_TASKS = [
-  {id:1,phase:'0',text:'Wyślij email do CTT UW',desc:'ctt@adm.uw.edu.pl | tel. +48 22 55 24 009',prio:'pilne',done:false,week:true},
-  {id:2,phase:'0',text:'Wyślij email do MNW (dział prawny)',desc:'sekretariat@mnw.art.pl | +48 22 621 10 31',prio:'pilne',done:false,week:true},
-  {id:3,phase:'0',text:'Znajdź prawnika IP',desc:'uprp.gov.pl — lista rzeczników patentowych',prio:'pilne',done:false,week:true},
-  {id:4,phase:'0',text:'Negocjuj warunki licencji z CTT UW',desc:'Zakres terytorialny, royalties 3–8%, wyłączność',prio:'pilne',done:false,week:false},
-  {id:5,phase:'0',text:'Podpisz umowę licencyjną',desc:'Sprawdź z prawnikiem PRZED podpisaniem',prio:'pilne',done:false,week:false},
-  {id:6,phase:'1',text:'Stwórz listę 20 konserwatorów',desc:'skz.pl, LinkedIn, strony muzeów',prio:'pilne',done:false,week:true},
-  {id:7,phase:'1',text:'Wyślij wiadomości do 10 konserwatorów',desc:'Użyj przygotowanego szablonu — nie sprzedajesz, pytasz',prio:'pilne',done:false,week:false},
-  {id:8,phase:'1',text:'Przeprowadź 15 rozmów walidacyjnych',desc:'Cel: 15 rozmów w 6 tygodniach',prio:'ważne',done:false,week:false},
-  {id:9,phase:'1',text:'Podsumuj wyniki walidacji rynku',desc:'Kto jest klientem? Ile zapłaci? Jaki model?',prio:'ważne',done:false,week:false},
-  {id:10,phase:'2',text:'Sprawdź program NCN Tango',desc:'ncn.gov.pl — komercjalizacja wyników badań',prio:'ważne',done:false,week:false},
-  {id:11,phase:'2',text:'Sprawdź AIP UW (inkubator)',desc:'aip.uw.edu.pl — mentoring, przestrzeń, sieć',prio:'normalne',done:false,week:false},
-  {id:12,phase:'2',text:'Zarejestruj firmę (JDG)',desc:'biznes.gov.pl — bezpłatnie, działa od razu',prio:'normalne',done:false,week:false},
+// ── ROLE SYSTEM ──────────────────────────────────────────────────────────────
+// Admin email — ZMIEŃ NA SWÓJ EMAIL
+const ADMIN_EMAIL = 'bienkowskikm@gmail.com';
+
+const ALL_TABS = ['dashboard','plan','calendar','tasks','journal','convos','contacts','messages','ai','budget','historia'];
+const DEFAULT_MEMBER_TABS = ['plan','contacts'];
+
+let currentUserProfile = null; // loaded from Firestore users collection
+
+function isAdmin() {
+  return currentUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
+
+async function loadUserProfile() {
+  if (!currentUser) return;
+  try {
+    const ref = doc(db, 'uzytkownicy', currentUser.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      currentUserProfile = snap.data();
+    } else {
+      // First login — create profile
+      const isAdm = isAdmin();
+      currentUserProfile = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        name: currentUser.displayName || currentUser.email,
+        role: isAdm ? 'admin' : 'member',
+        tabs: isAdm ? ALL_TABS : DEFAULT_MEMBER_TABS,
+        joinedAt: new Date().toISOString(),
+      };
+      await setDoc(ref, currentUserProfile);
+    }
+    setupTabs();
+  } catch(e) { console.error('loadUserProfile:', e); setupTabs(); }
+}
+
+function getMyTabs() {
+  if (isAdmin()) return [...ALL_TABS, 'zespol'];
+  return currentUserProfile?.tabs || DEFAULT_MEMBER_TABS;
+}
+
+function setupTabs() {
+  const myTabs = getMyTabs();
+  document.querySelectorAll('.tab').forEach(tab => {
+    const tabName = tab.getAttribute('data-tab');
+    if (!tabName) return;
+    tab.style.display = myTabs.includes(tabName) ? '' : 'none';
+  });
+  // Show Zespół tab only for admin
+  const zt = document.getElementById('tabZespol');
+  if (zt) zt.style.display = isAdmin() ? '' : 'none';
+  // Hide FAB for view-only members (only plan+contacts)
+  const fabEl = document.getElementById('fab');
+  if (fabEl) fabEl.style.display = (myTabs.length <= 2 && !isAdmin()) ? 'none' : '';
+}
+
+// ── DEFAULT DATA ──────────────────────────────────────────────────────────────
+const DEFAULT_PLAN = [
+  { id: 'p0', phase: 'Faza 0 — Licencja', color: '#E24B4A', steps: [
+    { id: 's01', title: 'Email do CTT UW', desc: 'ctt@adm.uw.edu.pl | +48 22 55 24 009', deadline: '', done: false },
+    { id: 's02', title: 'Email do MNW (dział prawny)', desc: 'sekretariat@mnw.art.pl', deadline: '', done: false },
+    { id: 's03', title: 'Znaleźć prawnika IP', desc: 'uprp.gov.pl — lista rzeczników patentowych', deadline: '', done: false },
+    { id: 's04', title: 'Negocjacje warunków licencji', desc: 'Zakres terytorialny, royalties 3–8%, wyłączność', deadline: '', done: false },
+    { id: 's05', title: 'Podpisanie umowy licencyjnej', desc: 'Sprawdzić z prawnikiem PRZED podpisaniem', deadline: '', done: false },
+  ]},
+  { id: 'p1', phase: 'Faza 1 — Walidacja rynku', color: '#EF9F27', steps: [
+    { id: 's11', title: 'Lista 20 konserwatorów', desc: 'skz.pl, LinkedIn, strony muzeów', deadline: '', done: false },
+    { id: 's12', title: '15 rozmów walidacyjnych', desc: 'Cel: 15 rozmów w 6 tygodniach', deadline: '', done: false },
+    { id: 's13', title: 'Podsumowanie wyników walidacji', desc: 'Kto jest klientem? Ile zapłaci? Jaki model?', deadline: '', done: false },
+  ]},
+  { id: 'p2', phase: 'Faza 2 — Model biznesowy', color: '#2E75B6', steps: [
+    { id: 's21', title: 'NCN Tango — sprawdź program', desc: 'ncn.gov.pl — komercjalizacja wyników badań', deadline: '', done: false },
+    { id: 's22', title: 'AIP UW — inkubator', desc: 'aip.uw.edu.pl — mentoring, przestrzeń, sieć', deadline: '', done: false },
+    { id: 's23', title: 'Spin-off UWRC sp. z o.o.', desc: 'Mail wysłany. Czekamy na odpowiedź.', deadline: '', done: false },
+    { id: 's24', title: 'Negocjacje udziałów — Marcin Karbarz', desc: 'Ma się zastanowić. Firma zakładana w każdym razie.', deadline: '', done: false },
+  ]},
+  { id: 'p3', phase: 'Faza 3 — Rejestracja firmy', color: '#52A843', steps: [
+    { id: 's31', title: 'Rejestracja JDG lub sp. z o.o.', desc: 'biznes.gov.pl — bezpłatnie', deadline: '', done: false },
+    { id: 's32', title: 'Konto firmowe', desc: 'Mbank / Revolut Business', deadline: '', done: false },
+  ]},
+  { id: 'p4', phase: 'Faza 4 — Finansowanie', color: '#9C27B0', steps: [
+    { id: 's41', title: 'Grant NCN Tango', desc: 'Złożyć wniosek po podpisaniu licencji', deadline: '', done: false },
+    { id: 's42', title: 'Inwestor anioł / VC', desc: 'Po walidacji rynku i modelu biznesowego', deadline: '', done: false },
+  ]},
+  { id: 'p5', phase: 'Faza 5 — Pilotaż', color: '#1F3864', steps: [
+    { id: 's51', title: 'Pilotaż z 3 konserwatorami', desc: 'Dostarczyć próbki produktu', deadline: '', done: false },
+    { id: 's52', title: 'Zebrać opinie i publikację', desc: 'Pani Łucja Nowak kończy metodologię', deadline: '', done: false },
+  ]},
 ];
 
-let S = { tasks: DEFAULT_TASKS, journal: [], convos: [], contacts: [], expenses: [], nid: 100, startDate: new Date().toISOString().slice(0,10) };
+const DEFAULT_TASKS = [
+  {id:1,phase:'0',text:'Wyślij email do CTT UW',desc:'ctt@adm.uw.edu.pl | tel. +48 22 55 24 009',prio:'pilne',done:false,week:true},
+  {id:2,phase:'0',text:'Wyślij email do MNW (dział prawny)',desc:'sekretariat@mnw.art.pl',prio:'pilne',done:false,week:true},
+  {id:3,phase:'0',text:'Znajdź prawnika IP',desc:'uprp.gov.pl — lista rzeczników patentowych',prio:'pilne',done:false,week:true},
+  {id:4,phase:'0',text:'Negocjuj warunki licencji z CTT UW',desc:'Zakres terytorialny, royalties 3–8%',prio:'pilne',done:false,week:false},
+  {id:5,phase:'0',text:'Podpisz umowę licencyjną',desc:'Sprawdź z prawnikiem PRZED podpisaniem',prio:'pilne',done:false,week:false},
+  {id:6,phase:'1',text:'Stwórz listę 20 konserwatorów',desc:'skz.pl, LinkedIn, strony muzeów',prio:'pilne',done:false,week:true},
+  {id:7,phase:'1',text:'Wyślij wiadomości do 10 konserwatorów',desc:'Użyj szablonu — pytasz, nie sprzedajesz',prio:'pilne',done:false,week:false},
+  {id:8,phase:'1',text:'Przeprowadź 15 rozmów walidacyjnych',desc:'Cel: 15 rozmów w 6 tygodniach',prio:'ważne',done:false,week:false},
+  {id:9,phase:'1',text:'Podsumuj wyniki walidacji rynku',desc:'Kto jest klientem? Ile zapłaci?',prio:'ważne',done:false,week:false},
+  {id:10,phase:'2',text:'Sprawdź program NCN Tango',desc:'ncn.gov.pl — komercjalizacja wyników badań',prio:'ważne',done:false,week:false},
+  {id:11,phase:'2',text:'Sprawdź AIP UW (inkubator)',desc:'aip.uw.edu.pl',prio:'normalne',done:false,week:false},
+  {id:12,phase:'2',text:'Zarejestruj firmę (JDG)',desc:'biznes.gov.pl — bezpłatnie',prio:'normalne',done:false,week:false},
+];
+
+const BASE_CONTACTS = [
+  {initials:'CTT',name:'CTT UW',role:'ctt@adm.uw.edu.pl · +48 22 55 24 009',prio:'crit',phone:'',notes:'Centrum Transferu Technologii UW — licencja patentu',tags:['Licencja']},
+  {initials:'MNW',name:'Muzeum Narodowe w Warszawie',role:'sekretariat@mnw.art.pl',prio:'crit',phone:'',notes:'Współautor patentu — wymagana zgoda na licencję',tags:['Licencja']},
+  {initials:'MK',name:'prof. Marcin Karbarz',role:'karbarz@chem.uw.edu.pl · Wydział Chemii UW',prio:'crit',phone:'',notes:'Wynalazca organożelu. Negocjacje udziałów w firmie w toku. Dał próbkę produktu do testów.',tags:['Wspólnik','Naukowiec']},
+  {initials:'EP',name:'Elżbieta Pilecka-Pietrusińska',role:'MNW — konserwator / współautorka patentu',prio:'crit',phone:'',notes:'Współautorka patentu z MNW',tags:['Patent']},
+  {initials:'MT',name:'Marta Turos',role:'DESA — główna konserwatorka',prio:'imp',phone:'',notes:'Dom antykwaryczny DESA. Dała telefony do restauratorek.',tags:['Kontakt','Konserwator']},
+  {initials:'DK',name:'Diana Kułakowska',role:'ASP Warszawa — restauratorka',prio:'crit',phone:'608012519',notes:'Spotkanie 14.05.2026 o 11:00, Wybrzeże Kościuszkowskie 67. 5 lat temu pracowała z organożelem — była zadowolona. Prosi o dyskrecję.',tags:['Konserwator','Spotkanie']},
+  {initials:'ŁN',name:'Łucja Nowak',role:'Restauratorka, Warszawa',prio:'crit',phone:'660793399',notes:'Aktualnie testuje produkt — bardzo zadowolona. Kończy publikację i metodologię. Zainteresowana stanowiskiem konserwatora w firmie. Kontakt 20–24.05.2026. IG: @lukiart. Ma pomysły na promocję z warsztatami.',tags:['Konserwator','Tester','Potencjalny pracownik']},
+  {initials:'BH',name:'Bożena Halska',role:'Konserwatorka',prio:'imp',phone:'607331252',notes:'Znajoma ks. Wojciecha Lippy z Muzeum Diecezjalnego w Opolu. Zainteresowana wypróbowaniem produktu. Kontakt gdy będzie chciała wypróbować.',tags:['Konserwator','Lead']},
+  {initials:'RG',name:'Robert Góździk',role:'Konserwator, Kraków',prio:'imp',phone:'607614364',notes:'Obiecano próbkę produktu przy okazji dekuplażu. Bardzo sympatyczny.',tags:['Konserwator','Lead','Kraków']},
+];
+
+let S = { tasks: DEFAULT_TASKS, journal: [], convos: [], contacts: [], expenses: [], messages: [], events: [], planSteps: DEFAULT_PLAN, nid: 100, startDate: new Date().toISOString().slice(0,10) };
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
@@ -450,13 +657,20 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('appScreen').style.display = 'flex';
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('registerScreen').style.display = 'none';
+    await loadUserProfile();
     startListening();
+    loadHistory();
+    // Non-admins start from first available tab
+    if (!isAdmin()) {
+      const firstTab = getMyTabs()[0];
+      const btn = document.querySelector('[data-tab="'+firstTab+'"]');
+      if (btn) showTab(firstTab, btn);
+    }
   } else {
     currentUser = null;
     if (unsubscribe) { unsubscribe(); unsubscribe = null; }
     document.getElementById('appScreen').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('registerScreen').style.display = 'none';
   }
 });
 
@@ -465,27 +679,41 @@ window.doLogin = async () => {
   const pass = document.getElementById('loginPass').value;
   const err = document.getElementById('loginErr');
   err.style.display = 'none';
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch(e) {
-    err.style.display = 'block';
-    err.textContent = e.code === 'auth/invalid-credential' ? 'Nieprawidłowy email lub hasło.' : 'Błąd: ' + e.message;
-  }
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch(e) { err.style.display='block'; err.textContent = e.code==='auth/invalid-credential'?'Nieprawidłowy email lub hasło.':'Błąd: '+e.message; }
 };
 
 window.doRegister = async () => {
+  const code = document.getElementById('regCode').value.trim().toUpperCase();
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
   const err = document.getElementById('registerErr');
   err.style.display = 'none';
+  if (!code) { err.style.display='block'; err.textContent='Wpisz kod zaproszenia.'; return; }
+  if (!name) { err.style.display='block'; err.textContent='Wpisz imię i nazwisko.'; return; }
   try {
+    // Validate invite code
+    const codeRef = doc(db, 'kody', code);
+    const codeSnap = await getDoc(codeRef);
+    if (!codeSnap.exists()) { err.style.display='block'; err.textContent='Nieprawidłowy kod zaproszenia.'; return; }
+    const codeData = codeSnap.data();
+    if (codeData.used) { err.style.display='block'; err.textContent='Ten kod został już użyty.'; return; }
+    // Create account
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: name });
+    // Mark code as used
+    await setDoc(codeRef, { ...codeData, used: true, usedBy: email, usedAt: new Date().toISOString() });
+    // Create user profile with tabs from code
+    const assignedTabs = codeData.tabs || DEFAULT_MEMBER_TABS;
+    await setDoc(doc(db, 'uzytkownicy', cred.user.uid), {
+      uid: cred.user.uid, email, name, role: 'member',
+      tabs: assignedTabs, joinedAt: new Date().toISOString(), inviteCode: code,
+    });
   } catch(e) {
-    err.style.display = 'block';
-    err.textContent = e.code === 'auth/email-already-in-use' ? 'Ten email jest już zarejestrowany.' :
-      e.code === 'auth/weak-password' ? 'Hasło musi mieć min. 6 znaków.' : 'Błąd: ' + e.message;
+    err.style.display='block';
+    err.textContent = e.code==='auth/email-already-in-use'?'Ten email jest już zarejestrowany.':
+      e.code==='auth/weak-password'?'Hasło musi mieć min. 6 znaków.':'Błąd: '+e.message;
   }
 };
 
@@ -498,20 +726,187 @@ function startListening() {
   if (unsubscribe) unsubscribe();
   const ref = doc(db, 'projekty', 'glowny');
   unsubscribe = onSnapshot(ref, (snap) => {
-    if (snap.exists()) {
-      S = snap.data();
-    } else {
-      S = { tasks: DEFAULT_TASKS, journal: [], convos: [], contacts: [], expenses: [], nid: 100, startDate: new Date().toISOString().slice(0,10) };
-    }
+    if (snap.exists()) { const d = snap.data(); S = {...S, ...d}; if(!S.planSteps) S.planSteps = DEFAULT_PLAN; }
     render();
   });
 }
 
-async function save() {
+// ── HISTORIA ZMIAN ───────────────────────────────────────────────────────────
+let _lastSnapshot = null; // poprzedni stan do diffowania
+let _pendingChange = null; // opis bieżącej zmiany (ustawiany przed save())
+
+function describeChange(prev, next, hint) {
+  if (hint) return hint;
+  // Autodiff najważniejszych tablic
+  const checks = [
+    { key:'tasks', label:'zadanie', nameF: x=>x.text },
+    { key:'contacts', label:'kontakt', nameF: x=>x.name },
+    { key:'convos', label:'rozmowa', nameF: x=>x.name },
+    { key:'journal', label:'wpis', nameF: x=>x.text?.slice(0,40) },
+    { key:'events', label:'wydarzenie', nameF: x=>x.title },
+    { key:'messages', label:'wiadomość', nameF: x=>x.to },
+    { key:'expenses', label:'wydatek', nameF: x=>x.desc },
+  ];
+  if (!prev) return 'Inicjalizacja danych';
+  for (const {key,label,nameF} of checks) {
+    const a=(prev[key]||[]), b=(next[key]||[]);
+    if (b.length > a.length) return `Dodano ${label}: ${nameF(b[b.length-1])||''}`;
+    if (b.length < a.length) return `Usunięto ${label}`;
+    // check done toggle on tasks
+    if (key==='tasks') {
+      for (let i=0;i<b.length;i++) {
+        if (a[i]&&b[i]&&a[i].done!==b[i].done)
+          return b[i].done ? `✅ Ukończono: ${b[i].text}` : `↩️ Odznaczono: ${b[i].text}`;
+      }
+    }
+  }
+  return 'Zmiana danych';
+}
+
+function changeType(desc) {
+  if (desc.startsWith('Dodano')) return 'add';
+  if (desc.startsWith('Usunięto')) return 'del';
+  if (desc.startsWith('✅')||desc.startsWith('↩️')) return 'task';
+  return 'edit';
+}
+
+async function saveChange(desc) {
   try {
-    const ref = doc(db, 'projekty', 'glowny');
-    await setDoc(ref, S);
+    const now = new Date();
+    const entry = {
+      ts: now.toISOString(),
+      desc,
+      type: changeType(desc),
+      who: whoName(),
+      snapshot: JSON.stringify(S),
+    };
+    await addDoc(collection(db,'historia'), entry);
+    _lastSnapshot = JSON.parse(JSON.stringify(S));
+  } catch(e) { console.error('Historia:', e); }
+}
+
+// Ładowanie historii z Firestore
+let historyCache = [];
+async function loadHistory() {
+  try {
+    const q = query(collection(db,'historia'), orderBy('ts','desc'), limit(200));
+    const snap = await getDocs(q);
+    historyCache = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderHistory();
+  } catch(e) { console.error(e); }
+}
+
+function renderHistory() {
+  const el = document.getElementById('histList');
+  const cnt = document.getElementById('histCount');
+  if (!el) return;
+  if (!historyCache.length) {
+    el.innerHTML='<div class="empty"><div class="empty-ico">🕓</div>Brak historii.</div>';
+    if(cnt) cnt.textContent='';
+    return;
+  }
+  if(cnt) cnt.textContent='('+historyCache.length+')';
+  // Group by day
+  let html='', lastDay='';
+  historyCache.forEach(h => {
+    const d = new Date(h.ts);
+    const day = d.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+    const time = d.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const tc = h.type==='add'?'htype-add':h.type==='del'?'htype-del':h.type==='task'?'htype-task':'htype-edit';
+    const tl = h.type==='add'?'dodano':h.type==='del'?'usunięto':h.type==='task'?'zadanie':'edycja';
+    if (day !== lastDay) {
+      html += `<div class="hday-sep">${day}</div>`;
+      lastDay = day;
+    }
+    html += `<div class="hentry">
+      <div class="hmeta">
+        <span class="htime">${time}</span>
+        <span class="htype ${tc}">${tl}</span>
+        <span class="hwho">${h.who||''}</span>
+      </div>
+      <div class="hdesc">${h.desc}</div>
+      ${h.snapshot?`<button class="hrestore" onclick="restoreVersion('${h.id}')">↩ Przywróć tę wersję</button>`:''}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+window.restoreVersion = async (histId) => {
+  const h = historyCache.find(x=>x.id===histId);
+  if (!h||!h.snapshot) return;
+  if (!confirm('Przywrócić tę wersję? Aktualne dane zostaną nadpisane.')) return;
+  const restored = JSON.parse(h.snapshot);
+  const ts = new Date(h.ts).toLocaleString('pl-PL');
+  _pendingChange = `Przywrócono wersję z ${ts}`;
+  S = restored;
+  await save();
+};
+
+// Raport dzienny
+window.generateReport = () => {
+  const today = new Date().toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const todayStr = new Date().toISOString().slice(0,10);
+  const todayChanges = historyCache.filter(h=>h.ts.startsWith(todayStr));
+  let report = `RAPORT DZIENNY — ${today}
+Projekt: Organożel (Patent EP 4 164 895 B1)
+
+`;
+  if (!todayChanges.length) {
+    report += 'Brak zmian w dzisiejszym dniu.\n';
+  } else {
+    report += `Zmiany (${todayChanges.length}):\n`;
+    [...todayChanges].reverse().forEach(h=>{
+      const t = new Date(h.ts).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+      report += `  ${t}  [${h.type}]  ${h.desc}  (${h.who||'?'})
+`;
+    });
+  }
+  report += `
+STAN PROJEKTU:
+`;
+  report += `  Zadania: ${(S.tasks||[]).filter(t=>t.done).length}/${(S.tasks||[]).length} ukończone
+`;
+  report += `  Rozmowy: ${(S.convos||[]).length}/15
+`;
+  const spent=(S.expenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  report += `  Budżet: ${Math.round(spent).toLocaleString('pl-PL')} / 50 000 zł wydano
+`;
+  report += `  Kontakty: ${BASE_CONTACTS.length + (S.contacts||[]).length}
+`;
+  const box = document.getElementById('reportBox');
+  box.textContent = report;
+  box.classList.add('show');
+  document.getElementById('reportMailRow').style.display='block';
+  window._reportText = report;
+};
+
+window.sendReportMail = () => {
+  const subject = encodeURIComponent('Raport dzienny — Organożel ' + new Date().toLocaleDateString('pl-PL'));
+  const body = encodeURIComponent(window._reportText||'');
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+};
+
+window.exportJSON = () => {
+  const data = JSON.stringify({...S, _exported: new Date().toISOString(), _version: 'v2'}, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup_organożel_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// ── SAVE (z historią) ─────────────────────────────────────────────────────────
+async function save(changeHint) {
+  try {
+    const desc = _pendingChange || describeChange(_lastSnapshot, S, changeHint);
+    _pendingChange = null;
+    await setDoc(doc(db,'projekty','glowny'), S);
     showSync();
+    await saveChange(desc);
+    // odśwież historię w tle
+    loadHistory();
   } catch(e) { console.error(e); }
 }
 
@@ -525,54 +920,55 @@ function showSync() {
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function render() {
-  renderStats(); renderWeekTasks(); renderTasks();
-  renderJournal(); renderConvos(); renderContacts(); renderExpenses(); renderWeekBadge();
+  renderStats(); renderWeekTasks(); renderTasks(); renderJournal();
+  renderConvos(); renderContacts(); renderExpenses(); renderWeekBadge();
+  renderMessages(); renderPlan(); renderCalendar(); renderDashUpcoming(); renderHistory();
 }
 
 function renderWeekBadge() {
   const start = new Date(S.startDate || new Date());
-  const weeks = Math.floor((new Date() - start) / (7*24*60*60*1000)) + 1;
-  document.getElementById('weekBadge').textContent = 'Tydzień ' + Math.max(1, weeks);
+  const weeks = Math.floor((new Date()-start)/(7*24*60*60*1000))+1;
+  document.getElementById('weekBadge').textContent='Tydzień '+Math.max(1,weeks);
 }
 
 function renderStats() {
-  const done = (S.tasks||[]).filter(t=>t.done).length;
-  const total = (S.tasks||[]).length;
-  const spent = (S.expenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-  const left = BUDGET_TOTAL - spent;
-  document.getElementById('sDone').textContent = done+'/'+total;
-  document.getElementById('sConvo').textContent = (S.convos||[]).length+'/15';
-  document.getElementById('sSpent').textContent = fmt(spent);
-  document.getElementById('sLeft').textContent = fmt(left);
-  document.getElementById('dBudgetSpent').textContent = fmt(spent)+' zł';
-  document.getElementById('dBudgetBar').style.width = Math.min(100,Math.round(spent/BUDGET_TOTAL*100))+'%';
-  document.getElementById('bLeft').textContent = fmt(left);
-  document.getElementById('convoNum').textContent = (S.convos||[]).length;
-  document.getElementById('convoBar').style.width = Math.min(100,Math.round((S.convos||[]).length/15*100))+'%';
+  const done=(S.tasks||[]).filter(t=>t.done).length;
+  const total=(S.tasks||[]).length;
+  const spent=(S.expenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const left=BUDGET_TOTAL-spent;
+  document.getElementById('sDone').textContent=done+'/'+total;
+  document.getElementById('sConvo').textContent=(S.convos||[]).length+'/15';
+  document.getElementById('sSpent').textContent=fmt(spent);
+  document.getElementById('sLeft').textContent=fmt(left);
+  document.getElementById('dBudgetSpent').textContent=fmt(spent)+' zł';
+  document.getElementById('dBudgetBar').style.width=Math.min(100,Math.round(spent/BUDGET_TOTAL*100))+'%';
+  document.getElementById('bLeft').textContent=fmt(left);
+  document.getElementById('convoNum').textContent=(S.convos||[]).length;
+  document.getElementById('convoBar').style.width=Math.min(100,Math.round((S.convos||[]).length/15*100))+'%';
 }
 
 function fmt(n) { return Math.round(n).toLocaleString('pl-PL'); }
 
 function renderWeekTasks() {
-  const el = document.getElementById('weekTaskList');
-  const list = (S.tasks||[]).filter(t=>t.week);
-  if (!list.length) { el.innerHTML = '<div class="empty" style="padding:16px 0">Brak zadań tygodnia.</div>'; return; }
-  el.innerHTML = list.map(t => taskHTML(t)).join('');
+  const el=document.getElementById('weekTaskList');
+  const list=(S.tasks||[]).filter(t=>t.week);
+  if(!list.length){el.innerHTML='<div class="empty" style="padding:16px 0">Brak zadań tygodnia.</div>';return;}
+  el.innerHTML=list.map(t=>taskHTML(t)).join('');
 }
 
 function renderTasks() {
-  ['0','1','2'].forEach(p => {
-    const el = document.getElementById('tList'+p);
-    if (!el) return;
-    const key = p==='2' ? ['2','3','4','5'] : [p];
-    const list = (S.tasks||[]).filter(t=>key.includes(t.phase));
-    if (!list.length) { el.innerHTML = '<div class="empty" style="padding:16px 0">Brak zadań.</div>'; return; }
-    el.innerHTML = list.map(t => taskHTML(t)).join('');
+  ['0','1','2'].forEach(p=>{
+    const el=document.getElementById('tList'+p);
+    if(!el)return;
+    const key=p==='2'?['2','3','4','5']:[p];
+    const list=(S.tasks||[]).filter(t=>key.includes(t.phase));
+    if(!list.length){el.innerHTML='<div class="empty" style="padding:16px 0">Brak zadań.</div>';return;}
+    el.innerHTML=list.map(t=>taskHTML(t)).join('');
   });
 }
 
 function taskHTML(t) {
-  const pc = t.prio==='pilne'?'prio-red':t.prio==='ważne'?'prio-orange':'prio-gray';
+  const pc=t.prio==='pilne'?'prio-red':t.prio==='ważne'?'prio-orange':'prio-gray';
   return `<div class="task-row">
     <button class="chk ${t.done?'done':''}" onclick="toggleTask(${t.id})"></button>
     <div class="task-body">
@@ -584,181 +980,633 @@ function taskHTML(t) {
 }
 
 window.toggleTask = async (id) => {
-  const t = (S.tasks||[]).find(t=>t.id===id);
-  if (t) { t.done=!t.done; await save(); }
+  const t=(S.tasks||[]).find(t=>t.id===id);
+  if(t){t.done=!t.done;_pendingChange=t.done?`✅ Ukończono: ${t.text}`:`↩️ Odznaczono: ${t.text}`;await save();}
 };
 
 function renderJournal() {
-  const el = document.getElementById('journalList');
-  if (!(S.journal||[]).length) { el.innerHTML = '<div class="empty"><div class="empty-ico">📓</div>Brak wpisów.<br>Kliknij + aby dodać.</div>'; return; }
-  el.innerHTML = [...S.journal].reverse().map(j=>`
+  const el=document.getElementById('journalList');
+  if(!(S.journal||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">📓</div>Brak wpisów.</div>';return;}
+  el.innerHTML=[...S.journal].reverse().map(j=>`
     <div class="jentry">
-      <div class="jmeta">
-        <span class="jdate">${j.date}</span>
-        <span class="jphase">${j.phase}</span>
-        ${j.who?`<span class="jwho">${j.who}</span>`:''}
-        ${j.mood?`<span class="jmood">nastrój ${j.mood}/5</span>`:''}
-      </div>
+      <div class="jmeta"><span class="jdate">${j.date}</span><span class="jphase">${j.phase}</span>${j.who?`<span class="jwho">${j.who}</span>`:''}</div>
       <div class="jtext">${j.text}</div>
       ${j.result?`<div class="jresult">→ ${j.result}</div>`:''}
     </div>`).join('');
 }
 
 function renderConvos() {
-  const el = document.getElementById('convoList');
-  if (!(S.convos||[]).length) { el.innerHTML = '<div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów.<br>Kliknij + po każdej rozmowie.</div>'; return; }
-  el.innerHTML = [...S.convos].reverse().map((c,i)=>`
+  const el=document.getElementById('convoList');
+  if(!(S.convos||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów.</div>';return;}
+  el.innerHTML=[...S.convos].reverse().map((c,i)=>`
     <div class="jentry">
-      <div class="jmeta">
-        <span class="jdate">${c.date}</span>
-        <span class="jphase">Rozmowa #${S.convos.length-i}</span>
-        ${c.open?`<span class="jmood">otwartość ${c.open}/5</span>`:''}
-        ${c.addedBy?`<span class="jwho">dodał: ${c.addedBy}</span>`:''}
-      </div>
+      <div class="jmeta"><span class="jdate">${c.date}</span><span class="jphase">Rozmowa #${S.convos.length-i}</span>${c.open?`<span class="jmood">otwartość ${c.open}/5</span>`:''}</div>
       <div class="jtext">${c.name}${c.inst?' · '+c.inst:''}</div>
       <div class="jresult">TCE: ${c.tce||'—'} | Problem: ${c.prob||'—'}</div>
       ${c.quote?`<div class="jresult" style="font-style:italic">"${c.quote}"</div>`:''}
     </div>`).join('');
 }
 
-const BASE_CONTACTS = [
-  {initials:'CTT',name:'CTT UW',role:'ctt@adm.uw.edu.pl · +48 22 55 24 009',prio:'crit'},
-  {initials:'MNW',name:'Muzeum Narodowe w Warszawie',role:'sekretariat@mnw.art.pl',prio:'crit'},
-  {initials:'MK',name:'prof. Marcin Karbarz',role:'karbarz@chem.uw.edu.pl · Wydział Chemii UW',prio:'crit'},
-  {initials:'EP',name:'Elżbieta Pilecka-Pietrusińska',role:'MNW — konserwator / współautorka patentu',prio:'crit'},
-];
-
 function renderContacts() {
-  const el = document.getElementById('contactList');
-  const all = [...BASE_CONTACTS, ...(S.contacts||[])];
-  el.innerHTML = all.map(c=>`
+  const el=document.getElementById('contactList');
+  const all=[...BASE_CONTACTS,...(S.contacts||[])];
+  el.innerHTML=all.map(c=>`
     <div class="crow">
       <div class="avatar">${c.initials||c.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
-      <div style="flex:1;min-width:0"><div class="cname">${c.name}</div><div class="crole">${c.role||''}</div></div>
+      <div style="flex:1;min-width:0">
+        <div class="cname">${c.name}</div>
+        <div class="crole">${c.role||''}</div>
+        ${c.phone?`<div class="contact-phone">📞 ${c.phone}</div>`:''}
+        ${c.notes?`<div class="contact-notes">${c.notes}</div>`:''}
+        ${(c.tags||[]).length?`<div class="contact-tags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>`:''}
+      </div>
       <span class="cbadge ${c.prio==='crit'?'cbadge-crit':'cbadge-imp'}">${c.prio==='crit'?'Krytyczny':'Ważny'}</span>
     </div>`).join('');
 }
 
 function renderExpenses() {
-  const el = document.getElementById('expList');
-  if (!(S.expenses||[]).length) { el.innerHTML = '<div class="empty"><div class="empty-ico">💰</div>Brak wydatków.<br>Kliknij + aby dodać.</div>'; return; }
-  el.innerHTML = [...S.expenses].reverse().map(e=>`
+  const el=document.getElementById('expList');
+  if(!(S.expenses||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">💰</div>Brak wydatków.</div>';return;}
+  el.innerHTML=[...S.expenses].reverse().map(e=>`
     <div class="brow">
-      <div><div class="blabel">${e.desc}</div><div class="bsub">${e.date} · ${e.cat}${e.addedBy?' · '+e.addedBy:''}</div></div>
+      <div><div class="blabel">${e.desc}</div><div class="bsub">${e.date} · ${e.cat}</div></div>
       <div class="bamount">${fmt(e.amount)} zł</div>
     </div>`).join('');
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────────────
-let currentTab = 'dashboard';
-window.showTab = (name, btn) => {
-  currentTab = name;
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  btn.classList.add('active');
+function renderMessages() {
+  const el=document.getElementById('messageList');
+  if(!(S.messages||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">✉️</div>Brak wiadomości.</div>';return;}
+  const iconMap={email:'📧',sms:'💬',linkedin:'💼',whatsapp:'📱'};
+  const classMap={email:'msg-email',sms:'msg-sms',linkedin:'msg-linkedin',whatsapp:'msg-sms'};
+  el.innerHTML=[...S.messages].reverse().map(m=>`
+    <div class="msg-row">
+      <div class="msg-icon ${classMap[m.type]||'msg-email'}">${iconMap[m.type]||'📧'}</div>
+      <div class="msg-body">
+        <div class="msg-to">Do: ${m.to}</div>
+        <div class="msg-subject">${m.subject}</div>
+        <div class="msg-date">${m.date}</div>
+      </div>
+      <span class="msg-status status-${m.status||'sent'}">${m.status==='draft'?'Szkic':m.status==='waiting'?'Czeka':'Wysłano'}</span>
+    </div>`).join('');
+}
+
+// ── PLAN DZIAŁANIA ────────────────────────────────────────────────────────────
+function renderPlan() {
+  const el=document.getElementById('planContent');
+  if(!el)return;
+  const phases=S.planSteps||DEFAULT_PLAN;
+  el.innerHTML=phases.map(ph=>{
+    const done=ph.steps.filter(s=>s.done).length;
+    const total=ph.steps.length;
+    return `<div class="plan-phase">
+      <div class="plan-phase-header" onclick="togglePhase('${ph.id}')">
+        <div class="plan-phase-title">${ph.phase}</div>
+        <div class="plan-phase-progress">${done}/${total}</div>
+      </div>
+      <div class="plan-steps" id="phase-${ph.id}">
+        ${ph.steps.map((s,i)=>`
+        <div class="plan-step">
+          <div class="step-num ${s.done?'done':''}" onclick="togglePlanStep('${ph.id}','${s.id}')" style="cursor:pointer">${s.done?'✓':(i+1)}</div>
+          <div class="step-body">
+            <div class="step-title" style="${s.done?'text-decoration:line-through;color:var(--text3)':''}">${s.title}</div>
+            ${s.desc?`<div class="step-desc">${s.desc}</div>`:''}
+            ${s.deadline?`<div class="step-deadline">⏰ ${s.deadline}</div>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.togglePhase = (id) => {
+  const el=document.getElementById('phase-'+id);
+  if(el) el.style.display=el.style.display==='none'?'':'none';
 };
 
-window.onFab = () => {
-  const map = {dashboard:'journal',tasks:'task',journal:'journal',convos:'convo',contacts:'contact',budget:'expense'};
+window.togglePlanStep = async (phaseId, stepId) => {
+  const phases=S.planSteps||DEFAULT_PLAN;
+  const ph=phases.find(p=>p.id===phaseId);
+  if(!ph)return;
+  const s=ph.steps.find(st=>st.id===stepId);
+  if(s){s.done=!s.done;await save();}
+};
+
+// ── KALENDARZ ─────────────────────────────────────────────────────────────────
+let calYear=new Date().getFullYear();
+let calMonth=new Date().getMonth();
+let calSelected=null;
+
+function renderCalendar() {
+  const el=document.getElementById('calGrid');
+  if(!el)return;
+  const months=['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+  document.getElementById('calMonthLabel').textContent=months[calMonth]+' '+calYear;
+  const days=['Pn','Wt','Śr','Cz','Pt','So','Nd'];
+  const allEvents=[...(S.events||[])];
+  const eventsByDate={};
+  allEvents.forEach(e=>{if(!eventsByDate[e.date])eventsByDate[e.date]=[];eventsByDate[e.date].push(e);});
+  const first=new Date(calYear,calMonth,1);
+  let startDay=(first.getDay()+6)%7;
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  let html=days.map(d=>`<div class="cal-day-hdr">${d}</div>`).join('');
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+  for(let i=startDay-1;i>=0;i--) html+=`<div class="cal-day other-month"><div class="cal-day-num">${prevDays-i}</div></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const evs=eventsByDate[dateStr]||[];
+    html+=`<div class="cal-day ${isToday?'today':''}" onclick="selectDay('${dateStr}')">
+      <div class="cal-day-num">${d}</div>
+      ${evs.slice(0,2).map(e=>`<div class="cal-dot ${e.type==='spotkanie'?'cal-dot-green':e.type==='telefon'?'cal-dot-red':''}"></div>`).join('')}
+    </div>`;
+  }
+  el.innerHTML=html;
+  if(calSelected)renderCalEvents(calSelected);
+}
+
+window.calNav=(dir)=>{calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();};
+
+window.selectDay=(date)=>{calSelected=date;renderCalEvents(date);};
+
+function renderCalEvents(date) {
+  const el=document.getElementById('calEventList');
+  const lbl=document.getElementById('calSelectedLabel');
+  const d=new Date(date+'T00:00:00');
+  lbl.textContent=d.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+  const evs=(S.events||[]).filter(e=>e.date===date);
+  if(!evs.length){el.innerHTML='<div class="empty" style="padding:12px 0">Brak wydarzeń w tym dniu.</div>';return;}
+  el.innerHTML=evs.map(e=>`
+    <div class="cal-event">
+      <div class="cal-event-dot" style="background:${e.type==='spotkanie'?'#52A843':e.type==='telefon'?'#E24B4A':'#2E75B6'}"></div>
+      <div>
+        <div class="cal-event-text">${e.title}</div>
+        <div class="cal-event-meta">${e.time||''} ${e.location?'· '+e.location:''} ${e.person?'· '+e.person:''}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderDashUpcoming() {
+  const el=document.getElementById('dashUpcoming');
+  if(!el)return;
+  const today=new Date();
+  const todayStr=today.toISOString().slice(0,10);
+  const upcoming=(S.events||[]).filter(e=>e.date>=todayStr).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  if(!upcoming.length){el.innerHTML='<div class="empty" style="padding:12px 0">Brak nadchodzących wydarzeń.</div>';return;}
+  el.innerHTML=upcoming.map(e=>`
+    <div class="cal-event">
+      <div class="cal-event-dot" style="background:${e.type==='spotkanie'?'#52A843':e.type==='telefon'?'#E24B4A':'#2E75B6'}"></div>
+      <div>
+        <div class="cal-event-text">${e.title}</div>
+        <div class="cal-event-meta">${e.date} ${e.time?'· '+e.time:''} ${e.person?'· '+e.person:''}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── AI NOTE PROCESSING ────────────────────────────────────────────────────────
+window.processAINote = async () => {
+  const text=document.getElementById('aiNoteInput').value.trim();
+  if(!text){alert('Wklej notatkę!');return;}
+  const spinner=document.getElementById('aiSpinner');
+  const result=document.getElementById('aiResult');
+  spinner.classList.add('show');
+  result.classList.remove('show');
+
+  const systemPrompt=`Jesteś asystentem do przetwarzania notatek dziennych dotyczących projektu komercjalizacji organożelu (patent EP 4 164 895 B1).
+
+Przeanalizuj notatkę i wyciągnij z niej ustrukturyzowane dane w formacie JSON. Odpowiedz TYLKO JSON bez żadnego tekstu przed ani po.
+
+Format odpowiedzi:
+{
+  "summary": "Krótkie 2-3 zdaniowe podsumowanie dnia",
+  "journal_entry": {
+    "date": "YYYY-MM-DD",
+    "phase": "FAZA 1 — Walidacja",
+    "text": "Szczegółowy opis działań",
+    "result": "Wyniki i ustalenia"
+  },
+  "contacts": [
+    {
+      "name": "Imię Nazwisko",
+      "role": "Stanowisko/organizacja",
+      "phone": "numer lub ''",
+      "notes": "Notatki o osobie i ustaleniach",
+      "tags": ["tag1", "tag2"],
+      "prio": "crit lub imp"
+    }
+  ],
+  "events": [
+    {
+      "title": "Spotkanie z...",
+      "date": "YYYY-MM-DD",
+      "time": "HH:MM lub ''",
+      "type": "spotkanie lub telefon lub inne",
+      "person": "Imię Nazwisko",
+      "location": "Adres lub ''",
+      "notes": ""
+    }
+  ],
+  "tasks": [
+    {
+      "text": "Co zrobić",
+      "desc": "Szczegóły",
+      "prio": "pilne lub ważne lub normalne",
+      "week": true
+    }
+  ]
+}
+
+Jeśli jakiegoś elementu nie ma w notatce, zwróć pustą tablicę []. Dla daty wpisu dziennika użyj daty z notatki lub dzisiejszej jeśli nie podano. Rok domyślny to 2026.`;
+
+  try {
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        system:systemPrompt,
+        messages:[{role:'user',content:text}]
+      })
+    });
+    const data=await response.json();
+    const raw=data.content?.map(i=>i.text||'').join('');
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+
+    result.innerHTML=`<strong>📋 Podsumowanie:</strong><br>${parsed.summary}<br><br>
+      <strong>Znalezione dane:</strong><br>
+      ✅ Wpis do dziennika<br>
+      ${(parsed.contacts||[]).length>0?('👤 '+parsed.contacts.length+' kontakt(ów)<br>'):''}
+      ${(parsed.events||[]).length>0?'📅 '+parsed.events.length+' wydarzenie(ń)<br>':''}
+      ${(parsed.tasks||[]).length>0?'✏️ '+parsed.tasks.length+' zadanie(ń)<br>':''}
+      <br><button class="btn btn-green" onclick="applyAINote()" style="width:100%;margin-top:8px">✅ Zatwierdź i dodaj do aplikacji</button>`;
+    result.classList.add('show');
+
+    window._aiParsed=parsed;
+  } catch(e) {
+    result.innerHTML=`<span style="color:#E24B4A">Błąd przetwarzania: ${e.message}. Sprawdź czy notatka jest czytelna.</span>`;
+    result.classList.add('show');
+  }
+  spinner.classList.remove('show');
+};
+
+window.applyAINote = async () => {
+  const parsed=window._aiParsed;
+  if(!parsed){alert('Brak danych do dodania.');return;}
+
+  if(parsed.journal_entry){
+    if(!S.journal)S.journal=[];
+    S.journal.push({...parsed.journal_entry,who:whoName()});
+  }
+  (parsed.contacts||[]).forEach(c=>{
+    if(!S.contacts)S.contacts=[];
+    if(!S.contacts.find(x=>x.name===c.name))S.contacts.push(c);
+  });
+  (parsed.events||[]).forEach(e=>{
+    if(!S.events)S.events=[];
+    S.events.push({...e,id:'ev_'+Date.now()+Math.random()});
+  });
+  (parsed.tasks||[]).forEach(t=>{
+    if(!S.tasks)S.tasks=[];
+    S.tasks.push({...t,id:S.nid++,phase:'1',done:false});
+  });
+
+  _pendingChange='Notatka AI: automatyczne uzupełnienie danych';
+  await save();
+  document.getElementById('aiNoteInput').value='';
+  document.getElementById('aiResult').classList.remove('show');
+  alert('✅ Dane dodane! Sprawdź Dziennik, Kontakty i Kalendarz.');
+};
+
+function whoName(){return currentUser?.displayName||currentUser?.email||'Użytkownik';}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+let currentTab='dashboard';
+window.showTab=(name,btn)=>{
+  currentTab=name;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const screen=document.getElementById('tab-'+name);
+  if(screen)screen.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='calendar')renderCalendar();
+  if(name==='historia'){loadHistory();}
+  if(name==='zespol'){loadTeamData();}
+};
+
+window.onFab=()=>{
+  const map={dashboard:'journal',tasks:'task',journal:'journal',convos:'convo',contacts:'contact',budget:'expense',messages:'message',calendar:'event',plan:'planstep',ai:'journal',historia:'journal',zespol:'journal'};
   openModal(map[currentTab]||'journal');
 };
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
-window.openModal = (type) => {
-  const mc = document.getElementById('mContent');
-  const today = new Date().toISOString().slice(0,10);
-  if (type==='journal') {
-    mc.innerHTML = `<div class="modal-title">Nowy wpis w dzienniku</div>
-      <div class="hint">Zapisuj każde działanie — emaile, rozmowy, decyzje. Zaraz po, nie "później".</div>
+window.openModal=(type)=>{
+  const mc=document.getElementById('mContent');
+  const today=new Date().toISOString().slice(0,10);
+
+  if(type==='journal'){
+    mc.innerHTML=`<div class="modal-title">Nowy wpis w dzienniku</div>
       <div class="field"><label>Data</label><input type="date" id="mDate" value="${today}"></div>
       <div class="field"><label>Faza</label><select id="mPhase"><option>FAZA 0 — Licencja</option><option>FAZA 1 — Walidacja</option><option>FAZA 2 — Strategia</option><option>FAZA 3 — Firma</option><option>FAZA 4 — Finansowanie</option><option>FAZA 5 — Pilotaż</option><option>CIĄGŁE</option></select></div>
-      <div class="field"><label>Co zrobiłem/am</label><textarea id="mText" placeholder="Opisz działanie szczegółowo..."></textarea></div>
+      <div class="field"><label>Co zrobiłem/am</label><textarea id="mText" placeholder="Opisz działanie..."></textarea></div>
       <div class="field"><label>Wynik / odpowiedź</label><input type="text" id="mResult" placeholder="Co się wydarzyło?"></div>
-      <div class="field"><label>Nastrój (1–5)</label><input type="number" id="mMood" min="1" max="5" value="3" style="width:80px"></div>
       <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveJournal()">Zapisz</button></div>`;
-  } else if (type==='task') {
-    mc.innerHTML = `<div class="modal-title">Nowe zadanie</div>
+  } else if(type==='task'){
+    mc.innerHTML=`<div class="modal-title">Nowe zadanie</div>
       <div class="field"><label>Zadanie</label><input type="text" id="mTask" placeholder="Co trzeba zrobić?"></div>
       <div class="field"><label>Faza</label><select id="mTPhase"><option value="0">Faza 0 — Licencja</option><option value="1">Faza 1 — Walidacja</option><option value="2">Faza 2+</option></select></div>
       <div class="field"><label>Priorytet</label><select id="mTPrio"><option value="pilne">Pilne</option><option value="ważne">Ważne</option><option value="normalne">Normalne</option></select></div>
       <div class="field"><label>Szczegóły (opcja)</label><input type="text" id="mTDesc" placeholder="Jak to zrobić?"></div>
-      <div class="field" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="mTWeek" style="width:18px;height:18px"><label for="mTWeek" style="text-transform:none;font-size:14px;letter-spacing:0;color:var(--text)">Dodaj do zadań tego tygodnia</label></div>
+      <div class="field" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="mTWeek" style="width:18px;height:18px"><label for="mTWeek" style="text-transform:none;font-size:14px;letter-spacing:0;color:var(--text)">Zadanie tygodnia</label></div>
       <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveTask()">Dodaj</button></div>`;
-  } else if (type==='convo') {
-    mc.innerHTML = `<div class="modal-title">Rozmowa z konserwatorem</div>
-      <div class="hint">Wypełnij zaraz po rozmowie. Każdy wpis = +1 do licznika (cel: 15).</div>
+  } else if(type==='convo'){
+    mc.innerHTML=`<div class="modal-title">Rozmowa z konserwatorem</div>
       <div class="field"><label>Imię i nazwisko</label><input type="text" id="mCvName" placeholder="Jan Kowalski"></div>
       <div class="field"><label>Instytucja</label><input type="text" id="mCvInst" placeholder="Muzeum Narodowe / prywatny"></div>
       <div class="field"><label>Data</label><input type="date" id="mCvDate" value="${today}"></div>
       <div class="field"><label>Czy używa TCE?</label><select id="mCvTCE"><option>Tak</option><option>Nie</option><option>Czasami</option><option>Nie wiem</option></select></div>
       <div class="field"><label>Główny problem</label><input type="text" id="mCvProb" placeholder="Co jest najtrudniejsze?"></div>
       <div class="field"><label>Otwartość (1–5)</label><input type="number" id="mCvOpen" min="1" max="5" value="3" style="width:80px"></div>
-      <div class="field"><label>Kluczowy cytat (opcja)</label><input type="text" id="mCvQuote" placeholder="Dosłowne słowa rozmówcy..."></div>
-      <div class="field"><label>Następny krok</label><input type="text" id="mCvNext" placeholder="Co ustaliliście?"></div>
-      <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveConvo()">Zapisz rozmowę</button></div>`;
-  } else if (type==='contact') {
-    mc.innerHTML = `<div class="modal-title">Nowy kontakt</div>
+      <div class="field"><label>Kluczowy cytat</label><input type="text" id="mCvQuote" placeholder="Dosłowne słowa..."></div>
+      <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveConvo()">Zapisz</button></div>`;
+  } else if(type==='contact'){
+    mc.innerHTML=`<div class="modal-title">Nowy kontakt</div>
       <div class="field"><label>Imię i nazwisko</label><input type="text" id="mCtName" placeholder="Jan Kowalski"></div>
-      <div class="field"><label>Organizacja / email / tel.</label><input type="text" id="mCtRole" placeholder="Muzeum / jan@example.com"></div>
+      <div class="field"><label>Org. / email</label><input type="text" id="mCtRole" placeholder="Muzeum / jan@example.com"></div>
+      <div class="field"><label>Telefon</label><input type="tel" id="mCtPhone" placeholder="600 000 000"></div>
+      <div class="field"><label>Notatki</label><textarea id="mCtNotes" placeholder="Co wiesz o tej osobie, ustalenia..."></textarea></div>
+      <div class="field"><label>Tagi (przez przecinek)</label><input type="text" id="mCtTags" placeholder="Konserwator, Kraków, Lead"></div>
       <div class="field"><label>Priorytet</label><select id="mCtPrio"><option value="crit">Krytyczny</option><option value="imp">Ważny</option></select></div>
       <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveContact()">Dodaj</button></div>`;
-  } else if (type==='expense') {
-    mc.innerHTML = `<div class="modal-title">Nowy wydatek</div>
-      <div class="field"><label>Opis</label><input type="text" id="mEDesc" placeholder="np. Konsultacja prawnika IP"></div>
+  } else if(type==='message'){
+    mc.innerHTML=`<div class="modal-title">Wysłana wiadomość</div>
+      <div class="field"><label>Typ</label><select id="mMType"><option value="email">Email</option><option value="sms">SMS</option><option value="linkedin">LinkedIn</option><option value="whatsapp">WhatsApp</option></select></div>
+      <div class="field"><label>Do kogo</label><input type="text" id="mMTo" placeholder="Jan Kowalski / jan@example.com"></div>
+      <div class="field"><label>Temat / treść</label><input type="text" id="mMSubject" placeholder="W sprawie organożelu..."></div>
+      <div class="field"><label>Data</label><input type="date" id="mMDate" value="${today}"></div>
+      <div class="field"><label>Status</label><select id="mMStatus"><option value="sent">Wysłano</option><option value="waiting">Oczekuję odpowiedzi</option><option value="draft">Szkic</option></select></div>
+      <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveMessage()">Zapisz</button></div>`;
+  } else if(type==='event'){
+    mc.innerHTML=`<div class="modal-title">Nowe wydarzenie</div>
+      <div class="field"><label>Tytuł</label><input type="text" id="mETitle" placeholder="Spotkanie z Dianą Kułakowską"></div>
+      <div class="field"><label>Data</label><input type="date" id="mEDate" value="${calSelected||today}"></div>
+      <div class="field"><label>Godzina</label><input type="time" id="mETime"></div>
+      <div class="field"><label>Typ</label><select id="mEType"><option value="spotkanie">Spotkanie</option><option value="telefon">Telefon</option><option value="deadline">Deadline</option><option value="inne">Inne</option></select></div>
+      <div class="field"><label>Osoba</label><input type="text" id="mEPerson" placeholder="Imię Nazwisko"></div>
+      <div class="field"><label>Miejsce</label><input type="text" id="mELoc" placeholder="Adres lub online"></div>
+      <div class="field"><label>Notatki</label><input type="text" id="mENotes" placeholder="Dodatkowe info..."></div>
+      <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveEvent()">Dodaj</button></div>`;
+  } else if(type==='planstep'){
+    const phases=(S.planSteps||DEFAULT_PLAN).map(p=>p.phase);
+    mc.innerHTML=`<div class="modal-title">Nowy krok do planu</div>
+      <div class="field"><label>Faza</label><select id="mPSPhase">${phases.map((p,i)=>`<option value="${i}">${p}</option>`).join('')}</select></div>
+      <div class="field"><label>Tytuł kroku</label><input type="text" id="mPSTitle" placeholder="Co trzeba zrobić?"></div>
+      <div class="field"><label>Opis</label><input type="text" id="mPSDesc" placeholder="Jak i gdzie?"></div>
+      <div class="field"><label>Termin (opcja)</label><input type="date" id="mPSDeadline"></div>
+      <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="savePlanStep()">Dodaj</button></div>`;
+  } else if(type==='expense'){
+    mc.innerHTML=`<div class="modal-title">Nowy wydatek</div>
+      <div class="field"><label>Opis</label><input type="text" id="mEDesc" placeholder="np. Domeny arthemys.eu + elogelo.com"></div>
       <div class="field"><label>Kwota (zł)</label><input type="number" id="mEAmt" placeholder="0" min="0" step="1"></div>
-      <div class="field"><label>Kategoria</label><select id="mECat"><option>Prawnik / licencja</option><option>Odczynniki chemiczne</option><option>Rejestracja firmy</option><option>Podróże / spotkania</option><option>Marketing</option><option>Inne</option></select></div>
+      <div class="field"><label>Kategoria</label><select id="mECat"><option>Prawnik / licencja</option><option>Odczynniki chemiczne</option><option>Rejestracja firmy</option><option>Domeny / IT</option><option>Podróże / spotkania</option><option>Marketing</option><option>Inne</option></select></div>
       <div class="field"><label>Data</label><input type="date" id="mEDate" value="${today}"></div>
       <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="saveExpense()">Zapisz</button></div>`;
   }
   document.getElementById('overlay').classList.add('open');
 };
 
-window.closeModal = () => document.getElementById('overlay').classList.remove('open');
-window.maybeClose = (e) => { if (e.target===document.getElementById('overlay')) closeModal(); };
+window.closeModal=()=>document.getElementById('overlay').classList.remove('open');
+window.maybeClose=(e)=>{if(e.target===document.getElementById('overlay'))closeModal();};
 
-function whoName() { return currentUser?.displayName || currentUser?.email || 'Użytkownik'; }
-
-window.saveJournal = async () => {
-  const text = document.getElementById('mText').value.trim();
-  if (!text) { alert('Wpisz treść działania.'); return; }
-  if (!S.journal) S.journal = [];
-  S.journal.push({ date: document.getElementById('mDate').value, phase: document.getElementById('mPhase').value, text, result: document.getElementById('mResult').value, mood: document.getElementById('mMood').value, who: whoName() });
-  await save(); closeModal();
+window.saveJournal=async()=>{
+  const text=document.getElementById('mText').value.trim();
+  if(!text){alert('Wpisz treść.');return;}
+  if(!S.journal)S.journal=[];
+  S.journal.push({date:document.getElementById('mDate').value,phase:document.getElementById('mPhase').value,text,result:document.getElementById('mResult').value,who:whoName()});
+  _pendingChange=`Nowy wpis dziennika: ${text.slice(0,50)}`;
+  await save();closeModal();
 };
 
-window.saveTask = async () => {
-  const text = document.getElementById('mTask').value.trim();
-  if (!text) { alert('Wpisz treść zadania.'); return; }
-  if (!S.tasks) S.tasks = [];
-  S.tasks.push({ id: S.nid++, phase: document.getElementById('mTPhase').value, text, desc: document.getElementById('mTDesc').value, prio: document.getElementById('mTPrio').value, done: false, week: document.getElementById('mTWeek').checked });
-  await save(); closeModal();
+window.saveTask=async()=>{
+  const text=document.getElementById('mTask').value.trim();
+  if(!text){alert('Wpisz treść.');return;}
+  if(!S.tasks)S.tasks=[];
+  const _taskText=text;
+  S.tasks.push({id:S.nid++,phase:document.getElementById('mTPhase').value,text,desc:document.getElementById('mTDesc').value,prio:document.getElementById('mTPrio').value,done:false,week:document.getElementById('mTWeek').checked});
+  _pendingChange=`Nowe zadanie: ${_taskText}`;
+  await save();closeModal();
 };
 
-window.saveConvo = async () => {
-  const name = document.getElementById('mCvName').value.trim();
-  if (!name) { alert('Wpisz imię rozmówcy.'); return; }
-  if (!S.convos) S.convos = [];
-  S.convos.push({ name, inst: document.getElementById('mCvInst').value, date: document.getElementById('mCvDate').value, tce: document.getElementById('mCvTCE').value, prob: document.getElementById('mCvProb').value, open: document.getElementById('mCvOpen').value, quote: document.getElementById('mCvQuote').value, next: document.getElementById('mCvNext').value, addedBy: whoName() });
-  await save(); closeModal();
+window.saveConvo=async()=>{
+  const name=document.getElementById('mCvName').value.trim();
+  if(!name){alert('Wpisz imię.');return;}
+  if(!S.convos)S.convos=[];
+  const _cvName=name;
+  S.convos.push({name,inst:document.getElementById('mCvInst').value,date:document.getElementById('mCvDate').value,tce:document.getElementById('mCvTCE').value,prob:document.getElementById('mCvProb').value,open:document.getElementById('mCvOpen').value,quote:document.getElementById('mCvQuote').value,addedBy:whoName()});
+  _pendingChange=`Nowa rozmowa: ${_cvName}`;
+  await save();closeModal();
 };
 
-window.saveContact = async () => {
-  const name = document.getElementById('mCtName').value.trim();
-  if (!name) return;
-  if (!S.contacts) S.contacts = [];
-  S.contacts.push({ name, role: document.getElementById('mCtRole').value, prio: document.getElementById('mCtPrio').value });
-  await save(); closeModal();
+window.saveContact=async()=>{
+  const name=document.getElementById('mCtName').value.trim();
+  if(!name)return;
+  if(!S.contacts)S.contacts=[];
+  const tags=document.getElementById('mCtTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  S.contacts.push({name,role:document.getElementById('mCtRole').value,phone:document.getElementById('mCtPhone').value,notes:document.getElementById('mCtNotes').value,tags,prio:document.getElementById('mCtPrio').value});
+  _pendingChange=`Nowy kontakt: ${name}`;
+  await save();closeModal();
 };
 
-window.saveExpense = async () => {
-  const desc = document.getElementById('mEDesc').value.trim();
-  const amount = parseFloat(document.getElementById('mEAmt').value);
-  if (!desc || !amount) { alert('Wpisz opis i kwotę.'); return; }
-  if (!S.expenses) S.expenses = [];
-  S.expenses.push({ desc, amount, cat: document.getElementById('mECat').value, date: document.getElementById('mEDate').value, addedBy: whoName() });
-  await save(); closeModal();
+window.saveMessage=async()=>{
+  const to=document.getElementById('mMTo').value.trim();
+  if(!to)return;
+  if(!S.messages)S.messages=[];
+  S.messages.push({type:document.getElementById('mMType').value,to,subject:document.getElementById('mMSubject').value,date:document.getElementById('mMDate').value,status:document.getElementById('mMStatus').value,addedBy:whoName()});
+  _pendingChange=`Wiadomość do: ${to} — ${document.getElementById('mMSubject').value}`;
+  await save();closeModal();
 };
+
+window.saveEvent=async()=>{
+  const title=document.getElementById('mETitle').value.trim();
+  if(!title){alert('Wpisz tytuł.');return;}
+  if(!S.events)S.events=[];
+  const _evTitle=title;
+  S.events.push({id:'ev_'+Date.now(),title,date:document.getElementById('mEDate').value,time:document.getElementById('mETime').value,type:document.getElementById('mEType').value,person:document.getElementById('mEPerson').value,location:document.getElementById('mELoc').value,notes:document.getElementById('mENotes').value});
+  _pendingChange=`Nowe wydarzenie: ${_evTitle} (${document.getElementById('mEDate').value})`;
+  await save();closeModal();renderCalendar();
+};
+
+window.savePlanStep=async()=>{
+  const title=document.getElementById('mPSTitle').value.trim();
+  if(!title)return;
+  const phIdx=parseInt(document.getElementById('mPSPhase').value);
+  if(!S.planSteps)S.planSteps=DEFAULT_PLAN;
+  const step={id:'s_'+Date.now(),title,desc:document.getElementById('mPSDesc').value,deadline:document.getElementById('mPSDeadline').value,done:false};
+  S.planSteps[phIdx].steps.push(step);
+  await save();closeModal();
+};
+
+window.saveExpense=async()=>{
+  const desc=document.getElementById('mEDesc').value.trim();
+  const amount=parseFloat(document.getElementById('mEAmt').value);
+  if(!desc||!amount){alert('Wpisz opis i kwotę.');return;}
+  if(!S.expenses)S.expenses=[];
+  S.expenses.push({desc,amount,cat:document.getElementById('mECat').value,date:document.getElementById('mEDate').value,addedBy:whoName()});
+  _pendingChange=`Nowy wydatek: ${desc} (${amount} zł)`;
+  await save();closeModal();
+};
+
+// ── ZESPÓŁ — zarządzanie użytkownikami i kodami ──────────────────────────────
+let allUsers = [];
+let allCodes = [];
+
+async function loadTeamData() {
+  if (!isAdmin()) return;
+  try {
+    // Load users
+    const uSnap = await getDocs(collection(db, 'uzytkownicy'));
+    allUsers = uSnap.docs.map(d => d.data());
+    // Load invite codes
+    const cSnap = await getDocs(collection(db, 'kody'));
+    allCodes = cSnap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderTeam();
+  } catch(e) { console.error('loadTeamData:', e); }
+}
+
+function renderTeam() {
+  // Users list
+  const ul = document.getElementById('userList');
+  const uc = document.getElementById('userCount');
+  if (!ul) return;
+  if (uc) uc.textContent = '(' + allUsers.length + ')';
+  if (!allUsers.length) { ul.innerHTML = '<div class="empty" style="padding:16px 0">Brak użytkowników.</div>'; }
+  else {
+    ul.innerHTML = allUsers.map(u => {
+      const initials = (u.name||u.email||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+      const isAdm = u.role === 'admin';
+      const tabsHTML = ALL_TABS.map(t => {
+        const on = (u.tabs||[]).includes(t);
+        const labels = {dashboard:'📊 Dash',plan:'📋 Plan',calendar:'📅 Kal.',tasks:'✅ Zad.',journal:'📓 Dz.',convos:'🎙 Rozm.',contacts:'📞 Kont.',messages:'✉️ Wiad.',ai:'🤖 AI',budget:'💰 Bud.',historia:'🕓 Hist.'};
+        return isAdm ? '' : `<button class="tab-toggle ${on?'on':''}" onclick="toggleUserTab('${u.uid}','${t}',this)">${labels[t]||t}</button>`;
+      }).join('');
+      return `<div class="user-row">
+        <div class="user-avatar">${initials}</div>
+        <div style="flex:1;min-width:0">
+          <div class="user-name">${u.name||'—'}</div>
+          <div class="user-email">${u.email||''}</div>
+          <span class="user-role-badge ${isAdm?'admin':''}">${isAdm?'Admin':'Członek'}</span>
+          ${!isAdm ? '<div class="tabs-selector">'+tabsHTML+'</div>' : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Codes list
+  const cl = document.getElementById('inviteCodeList');
+  if (!cl) return;
+  const activeCodes = allCodes.filter(c => !c.used);
+  const usedCodes = allCodes.filter(c => c.used);
+  if (!allCodes.length) { cl.innerHTML = '<div style="font-size:13px;color:var(--text3)">Brak wygenerowanych kodów.</div>'; return; }
+  cl.innerHTML = [...activeCodes, ...usedCodes].map(c => `
+    <div class="invite-row">
+      <div>
+        <div class="invite-code ${c.used?'invite-used':''}">${c.id}</div>
+        <div class="invite-meta">${c.used ? ('✓ Użyto przez '+c.usedBy) : ('Zakładki: '+(c.tabs||[]).join(', '))}</div>
+      </div>
+      ${!c.used ? `<button class="copy-btn" onclick="copyCode('${c.id}')">Kopiuj</button>` : '<span style="font-size:11px;color:var(--text3)">Użyty</span>'}
+    </div>`).join('');
+}
+
+window.toggleUserTab = async (uid, tabName, btn) => {
+  const u = allUsers.find(x => x.uid === uid);
+  if (!u) return;
+  const tabs = u.tabs || [];
+  const idx = tabs.indexOf(tabName);
+  if (idx >= 0) tabs.splice(idx, 1); else tabs.push(tabName);
+  u.tabs = tabs;
+  btn.classList.toggle('on');
+  try {
+    await setDoc(doc(db, 'uzytkownicy', uid), u);
+    showSync();
+  } catch(e) { console.error(e); }
+};
+
+window.generateInviteCode = async () => {
+  const input = document.getElementById('newCodeInput');
+  let code = (input.value.trim().toUpperCase() || ('ORGANO-' + Math.random().toString(36).slice(2,6).toUpperCase()));
+  code = code.replace(/[^A-Z0-9\-]/g,'');
+  if (!code) { alert('Wpisz kod lub zostaw puste dla losowego.'); return; }
+  // Default tabs = plan + contacts, can be customised later
+  const tabsForCode = DEFAULT_MEMBER_TABS;
+  try {
+    await setDoc(doc(db, 'kody', code), { code, tabs: tabsForCode, used: false, createdAt: new Date().toISOString(), createdBy: currentUser?.email });
+    input.value = '';
+    alert('Kod ' + code + ' wygenerowany!\nPodaj go osobie którą zapraszasz.');
+    loadTeamData();
+  } catch(e) { alert('Błąd: ' + e.message); }
+};
+
+window.copyCode = (code) => {
+  navigator.clipboard.writeText(code).then(() => {
+    showSync();
+  });
+};
+
+// ── TABS SCROLLBAR SYNC ───────────────────────────────────────────────────────
+function initTabsScroll() {
+  const tabs = document.getElementById('tabsBar');
+  const thumb = document.getElementById('tabsThumb');
+  const track = document.getElementById('tabsTrack');
+  if (!tabs || !thumb || !track) return;
+  function updateThumb() {
+    const ratio = tabs.clientWidth / tabs.scrollWidth;
+    const thumbW = Math.max(24, track.clientWidth * ratio);
+    const maxScroll = tabs.scrollWidth - tabs.clientWidth;
+    const maxLeft = track.clientWidth - thumbW;
+    const left = maxScroll > 0 ? (tabs.scrollLeft / maxScroll) * maxLeft : 0;
+    thumb.style.width = thumbW + 'px';
+    thumb.style.left = left + 'px';
+    track.style.display = ratio >= 0.99 ? 'none' : 'block';
+  }
+  tabs.addEventListener('scroll', updateThumb, { passive: true });
+  window.addEventListener('resize', updateThumb);
+  let dragging = false, startX = 0, startScrollLeft = 0;
+  thumb.addEventListener('pointerdown', e => {
+    dragging = true; startX = e.clientX; startScrollLeft = tabs.scrollLeft;
+    thumb.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  thumb.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const thumbW = thumb.offsetWidth;
+    const maxLeft = track.clientWidth - thumbW;
+    const maxScroll = tabs.scrollWidth - tabs.clientWidth;
+    tabs.scrollLeft = startScrollLeft + (e.clientX - startX) * (maxScroll / (maxLeft || 1));
+  });
+  thumb.addEventListener('pointerup', () => { dragging = false; });
+  track.addEventListener('click', e => {
+    if (e.target === thumb) return;
+    const rect = track.getBoundingClientRect();
+    tabs.scrollLeft = ((e.clientX - rect.left) / track.clientWidth) * (tabs.scrollWidth - tabs.clientWidth);
+  });
+  updateThumb();
+}
+setTimeout(initTabsScroll, 400);
+
+// ── INIT CALENDAR EVENTS from note ───────────────────────────────────────────
+// Pre-populate events from the 12.05 note
+window.addEventListener('load',()=>{
+  // Events will be loaded from Firestore. If first time, add default events:
+  setTimeout(()=>{
+    if(S.events&&S.events.length===0){
+      S.events=[
+        {id:'ev_1',title:'Spotkanie z Dianą Kułakowską',date:'2026-05-14',time:'11:00',type:'spotkanie',person:'Diana Kułakowska',location:'Wybrzeże Kościuszkowskie 67, Warszawa',notes:'Opinia nt. organożelu. Prosi o dyskrecję.'},
+        {id:'ev_2',title:'Telefon do Łucji Nowak',date:'2026-05-20',time:'',type:'telefon',person:'Łucja Nowak',location:'',notes:'Pomysły na promocję z warsztatami. IG: @lukiart'},
+      ];
+    }
+  },2000);
+});
 </script>
 </body>
 </html>
