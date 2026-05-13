@@ -6,6 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1F3864">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Centrum Sterowania — Organożel</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -534,33 +537,34 @@ onAuthStateChanged(auth, async user => {
   CU = user;
   show('appScreen');
 
-  if (amAdmin()) {
-    // Admin — zakładki od razu, bez czekania na Firestore
-    setupTabs(ALL_TABS);
-    // Aktywuj pierwszą widoczną zakładkę
-    activateFirstTab(ALL_TABS);
-    // Zapisz profil admina w tle
-    setDoc(doc(db,'uzytkownicy',CU.uid), {
-      uid:CU.uid, email:CU.email, name:CU.displayName||CU.email, role:'admin', tabs:ALL_TABS
-    }).catch(console.error);
-  } else {
-    // Nie-admin — pobierz profil z Firestore
-    try {
-      const snap = await getDoc(doc(db,'uzytkownicy',CU.uid));
-      const tabs = snap.exists() ? (snap.data().tabs || DEFAULT_MEMBER_TABS) : DEFAULT_MEMBER_TABS;
-      if (!snap.exists()) {
-        await setDoc(doc(db,'uzytkownicy',CU.uid), {
-          uid:CU.uid, email:CU.email, name:CU.displayName||CU.email,
-          role:'member', tabs:DEFAULT_MEMBER_TABS, joinedAt:new Date().toISOString()
-        });
+  // Zawsze pobierz profil z Firestore
+  try {
+    const snap = await getDoc(doc(db,'uzytkownicy',CU.uid));
+    let profile = snap.exists() ? snap.data() : null;
+
+    // Sprawdź czy admin — przez email LUB przez role w Firestore
+    const isAdm = amAdmin() || (profile && profile.role === 'admin');
+
+    if (isAdm) {
+      // Nadpisz profil jako admin z pełnymi zakładkami
+      profile = { uid:CU.uid, email:CU.email, name:CU.displayName||CU.email, role:'admin', tabs:ALL_TABS };
+      setDoc(doc(db,'uzytkownicy',CU.uid), profile).catch(console.error);
+      setupTabs(ALL_TABS);
+      activateFirstTab(ALL_TABS);
+    } else {
+      if (!profile) {
+        profile = { uid:CU.uid, email:CU.email, name:CU.displayName||CU.email, role:'member', tabs:DEFAULT_MEMBER_TABS, joinedAt:new Date().toISOString() };
+        await setDoc(doc(db,'uzytkownicy',CU.uid), profile);
       }
+      const tabs = profile.tabs || DEFAULT_MEMBER_TABS;
       setupTabs(tabs);
       activateFirstTab(tabs);
-    } catch(e) {
-      console.error(e);
-      setupTabs(DEFAULT_MEMBER_TABS);
-      activateFirstTab(DEFAULT_MEMBER_TABS);
     }
+  } catch(e) {
+    console.error(e);
+    // Fallback — jeśli email jest adminem daj pełny dostęp
+    if (amAdmin()) { setupTabs(ALL_TABS); activateFirstTab(ALL_TABS); }
+    else { setupTabs(DEFAULT_MEMBER_TABS); activateFirstTab(DEFAULT_MEMBER_TABS); }
   }
 
   startListening();
