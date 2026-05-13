@@ -546,31 +546,18 @@ async function loadUserProfile() {
   if (!currentUser) return;
   try {
     const ref = doc(db, 'uzytkownicy', currentUser.uid);
-    // Admin ZAWSZE ma pełny dostęp — ignorujemy to co jest w Firestore
-    if (isAdmin()) {
-      currentUserProfile = {
-        uid: currentUser.uid,
-        email: currentUser.email,
-        name: currentUser.displayName || currentUser.email,
-        role: 'admin',
-        tabs: ALL_TABS,
-      };
-      // Nadpisz profil w Firestore żeby był aktualny
-      await setDoc(ref, currentUserProfile);
-      setupTabs();
-      return;
-    }
-    // Dla pozostałych — wczytaj z Firestore
     const snap = await getDoc(ref);
     if (snap.exists()) {
       currentUserProfile = snap.data();
     } else {
+      // First login — create profile
+      const isAdm = isAdmin();
       currentUserProfile = {
         uid: currentUser.uid,
         email: currentUser.email,
         name: currentUser.displayName || currentUser.email,
-        role: 'member',
-        tabs: DEFAULT_MEMBER_TABS,
+        role: isAdm ? 'admin' : 'member',
+        tabs: isAdm ? ALL_TABS : DEFAULT_MEMBER_TABS,
         joinedAt: new Date().toISOString(),
       };
       await setDoc(ref, currentUserProfile);
