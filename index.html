@@ -48,8 +48,8 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;padding:12px 14px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;white-space:nowrap;font-family:inherit}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-.scroll-track{height:5px;background:var(--border);margin:2px 8px 5px;border-radius:3px;position:relative;cursor:pointer}
-.scroll-thumb{height:5px;background:var(--blue);border-radius:3px;position:absolute;top:0;left:0;min-width:32px;opacity:.85;cursor:grab;transition:opacity .15s}
+.scroll-track{height:10px;background:var(--border);margin:3px 8px 6px;border-radius:5px;position:relative;cursor:pointer}
+.scroll-thumb{height:10px;background:var(--blue);border-radius:5px;position:absolute;top:0;left:0;min-width:40px;opacity:.9;cursor:grab;transition:opacity .15s}
 .scroll-thumb:hover{opacity:1}
 .scroll-thumb:active{cursor:grabbing;opacity:1}
 
@@ -413,6 +413,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
   <div id="tab-contacts" class="screen">
     <div class="card" style="padding:10px 14px"><div id="contactList"></div></div>
     <button class="add-btn" onclick="openModal('contact')">+ nowy kontakt</button>
+    <button class="add-btn" onclick="deduplicateAll()" style="border-color:#EF9F27;color:#854F0B">🧹 Usuń duplikaty</button>
   </div>
 
   <!-- WIADOMOŚCI -->
@@ -1268,7 +1269,11 @@ window.parseAIJson = async () => {
 window.applyAI = async () => {
   const p=window._aiParsed; if(!p)return;
   if(p.journal_entry){if(!S.journal)S.journal=[];S.journal.push({...p.journal_entry,who:CU?.displayName||CU?.email});}
-  (p.contacts||[]).forEach(c=>{if(!S.contacts)S.contacts=[];if(!S.contacts.find(x=>x.name===c.name))S.contacts.push(c);});
+  (p.contacts||[]).forEach(c=>{
+    if(!S.contacts) S.contacts=[];
+    const allNames=[...BASE_CONTACTS.map(x=>x.name.toLowerCase()),...(S.contacts||[]).map(x=>x.name.toLowerCase())];
+    if(!allNames.includes(c.name.toLowerCase())) S.contacts.push(c);
+  });
   (p.events||[]).forEach(e=>{if(!S.events)S.events=[];S.events.push({...e,id:'ev_'+Date.now()+Math.random()});});
   (p.tasks||[]).forEach(t=>{if(!S.tasks)S.tasks=[];S.tasks.push({...t,id:S.nid++,phase:'1',done:false});});
   _pendingChange='Notatka AI: automatyczne uzupełnienie';
@@ -1510,6 +1515,81 @@ window.deleteIdea = async (idx) => {
 };
 
 // SCROLLBAR
+// ── DEDUPLIKACJA ──────────────────────────────────────────────────────────────
+window.deduplicateAll = async () => {
+  let removed = 0;
+
+  // Contacts — usuń duplikaty z S.contacts względem BASE_CONTACTS i siebie nawzajem
+  if (S.contacts && S.contacts.length) {
+    const baseNames = BASE_CONTACTS.map(c=>c.name.toLowerCase());
+    const seen = new Set(baseNames);
+    const before = S.contacts.length;
+    S.contacts = S.contacts.filter(c => {
+      const key = c.name.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    removed += before - S.contacts.length;
+  }
+
+  // Journal — usuń po identycznym tekście + dacie
+  if (S.journal && S.journal.length) {
+    const before = S.journal.length;
+    const seen = new Set();
+    S.journal = S.journal.filter(j => {
+      const key = (j.date||'') + '|' + (j.text||'').slice(0,50);
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    removed += before - S.journal.length;
+  }
+
+  // Convos — usuń po imieniu + dacie
+  if (S.convos && S.convos.length) {
+    const before = S.convos.length;
+    const seen = new Set();
+    S.convos = S.convos.filter(c => {
+      const key = (c.name||'').toLowerCase() + '|' + (c.date||'');
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    removed += before - S.convos.length;
+  }
+
+  // Messages — usuń po adresacie + temacie
+  if (S.messages && S.messages.length) {
+    const before = S.messages.length;
+    const seen = new Set();
+    S.messages = S.messages.filter(m => {
+      const key = (m.to||'').toLowerCase() + '|' + (m.subject||'').slice(0,40);
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    removed += before - S.messages.length;
+  }
+
+  // Events — usuń po tytule + dacie
+  if (S.events && S.events.length) {
+    const before = S.events.length;
+    const seen = new Set();
+    S.events = S.events.filter(e => {
+      const key = (e.title||'').toLowerCase() + '|' + (e.date||'');
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    removed += before - S.events.length;
+  }
+
+  if (removed > 0) {
+    _pendingChange = `Usunięto ${removed} duplikat(ów)`;
+    await save();
+    alert(`✅ Usunięto ${removed} duplikat(ów). Dane zostały zaktualizowane.`);
+  } else {
+    alert('✅ Brak duplikatów — dane są czyste!');
+  }
+};
+
 function initScrollbar() {
   const tabs=document.getElementById('tabsBar');
   const thumb=document.getElementById('scrollThumb');
