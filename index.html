@@ -48,8 +48,9 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;padding:12px 14px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;white-space:nowrap;font-family:inherit}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-.scroll-track{height:3px;background:var(--surface2);margin:0 12px 6px;border-radius:2px;position:relative;cursor:pointer}
-.scroll-thumb{height:3px;background:var(--blue);border-radius:2px;position:absolute;top:0;left:0;min-width:24px;opacity:.6;cursor:grab}
+.scroll-track{height:5px;background:var(--border);margin:2px 8px 5px;border-radius:3px;position:relative;cursor:pointer}
+.scroll-thumb{height:5px;background:var(--blue);border-radius:3px;position:absolute;top:0;left:0;min-width:32px;opacity:.85;cursor:grab;transition:opacity .15s}
+.scroll-thumb:hover{opacity:1}
 .scroll-thumb:active{cursor:grabbing;opacity:1}
 
 /* SCREENS */
@@ -224,6 +225,31 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .btn-green{background:#52A843;color:#fff;border-color:#52A843}
 .sync-badge{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#52A843;color:#fff;font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
 .sync-badge.show{opacity:1}
+
+/* POMYSŁY */
+.idea-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin-bottom:10px;position:relative}
+.idea-title{font-size:15px;font-weight:600;color:var(--text);line-height:1.4}
+.idea-desc{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5}
+.idea-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.idea-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
+.itag-blue{background:#D6E4F0;color:#185FA5}
+.itag-green{background:#EAF3DE;color:#3B6D11}
+.itag-orange{background:#FAEEDA;color:#854F0B}
+.itag-red{background:#FCEBEB;color:#A32D2D}
+.idea-meta{font-size:11px;color:var(--text3);margin-top:6px}
+.idea-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+.status-nowy{background:#D6E4F0;color:#185FA5}
+.status-badanie{background:#FAEEDA;color:#854F0B}
+.status-gotowy{background:#EAF3DE;color:#3B6D11}
+.status-odrzucony{background:#F0F0F0;color:#999}
+
+/* DELETE BUTTONS */
+.del-btn{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;display:none}
+.del-btn:hover{background:#FCEBEB;color:#A32D2D}
+.admin-mode .del-btn{display:block}
+.del-row{display:flex;align-items:center;justify-content:space-between}
+.del-inline{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:2px 6px;border-radius:4px;font-family:inherit}
+.del-inline:hover{background:#FCEBEB;color:#A32D2D}
 </style>
 </head>
 <body>
@@ -292,6 +318,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
       <button class="tab" data-tab="ai" onclick="showTab('ai',this)">🤖 Notatka AI</button>
       <button class="tab" data-tab="budget" onclick="showTab('budget',this)">Budżet</button>
       <button class="tab" data-tab="historia" onclick="showTab('historia',this)">🕓 Historia</button>
+      <button class="tab" data-tab="pomysly" onclick="showTab('pomysly',this)">💡 Pomysły</button>
       <button class="tab" data-tab="zespol" onclick="showTab('zespol',this)">👥 Zespół</button>
     </div>
     <div class="scroll-track" id="scrollTrack"><div class="scroll-thumb" id="scrollThumb"></div></div>
@@ -444,6 +471,13 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
     </div>
   </div>
 
+  <!-- POMYSŁY -->
+  <div id="tab-pomysly" class="screen">
+    <div class="hint" style="margin-bottom:0">💡 Pomysły na produkty i usługi z organożelem. Kliknij + aby dodać nowy.</div>
+    <div id="pomyslyList" style="margin-top:10px"></div>
+    <button class="add-btn" onclick="openModal('pomysl')">+ dodaj pomysł</button>
+  </div>
+
   <!-- ZESPÓŁ -->
   <div id="tab-zespol" class="screen">
     <div class="card">
@@ -492,7 +526,7 @@ const db = getFirestore(app);
 // ══════════════════════════════════════════════════════
 const ADMIN_EMAILS = ['bienkowskikm@gmail.com', 'krzysbienkowski@gmail.com'];
 const BUDGET_TOTAL = 50000;
-const ALL_TABS = ['dashboard','plan','calendar','tasks','journal','convos','contacts','messages','ai','budget','historia','zespol'];
+const ALL_TABS = ['dashboard','plan','calendar','tasks','journal','convos','contacts','messages','ai','budget','historia','pomysly','zespol'];
 const DEFAULT_MEMBER_TABS = ['plan','contacts'];
 
 let CU = null; // currentUser
@@ -749,7 +783,7 @@ const BASE_CONTACTS = [
 function render() {
   renderStats(); renderWeekTasks(); renderTasks(); renderJournal();
   renderConvos(); renderContacts(); renderExpenses();
-  renderMessages(); renderPlan(); renderDashUpcoming();
+  renderMessages(); renderPlan(); renderDashUpcoming(); renderPomysly();
   if (document.getElementById('tab-calendar').classList.contains('active')) renderCalendar();
 }
 
@@ -807,59 +841,127 @@ window.toggleTask = async id => {
 function renderJournal() {
   const el=document.getElementById('journalList');
   if(!(S.journal||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">📓</div>Brak wpisów.</div>';return;}
-  el.innerHTML=[...S.journal].reverse().map(j=>`<div class="jentry">
-    <div class="jmeta"><span class="jdate">${j.date}</span><span class="jphase">${j.phase}</span>${j.who?`<span class="jwho">${j.who}</span>`:''}</div>
-    <div class="jtext">${j.text}</div>${j.result?`<div class="jresult">→ ${j.result}</div>`:''}</div>`).join('');
+  const rev=[...S.journal].reverse();
+  el.innerHTML=rev.map((j,ri)=>{
+    const realIdx=S.journal.length-1-ri;
+    return `<div class="jentry">
+      <div class="del-row">
+        <div class="jmeta"><span class="jdate">${j.date}</span><span class="jphase">${j.phase}</span>${j.who?`<span class="jwho">${j.who}</span>`:''}</div>
+        ${amAdmin()?`<button class="del-inline" onclick="deleteJournal(${realIdx})">🗑</button>`:''}
+      </div>
+      <div class="jtext">${j.text}</div>${j.result?`<div class="jresult">→ ${j.result}</div>`:''}</div>`;
+  }).join('');
 }
+
+window.deleteJournal = async (idx) => {
+  if(!confirm('Usunąć ten wpis?')) return;
+  S.journal.splice(idx,1); _pendingChange='Usunięto wpis z dziennika';
+  await save();
+};
 
 function renderConvos() {
   const el=document.getElementById('convoList');
   if(!(S.convos||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">🎙️</div>Brak rozmów.</div>';return;}
-  el.innerHTML=[...S.convos].reverse().map((c,i)=>`<div class="jentry">
-    <div class="jmeta"><span class="jdate">${c.date}</span><span class="jphase">Rozmowa #${S.convos.length-i}</span>${c.open?`<span class="jwho">otwartość ${c.open}/5</span>`:''}</div>
-    <div class="jtext">${c.name}${c.inst?' · '+c.inst:''}</div>
-    <div class="jresult">TCE: ${c.tce||'—'} | Problem: ${c.prob||'—'}</div>
-    ${c.quote?`<div class="jresult" style="font-style:italic">"${c.quote}"</div>`:''}</div>`).join('');
+  const rev=[...S.convos].reverse();
+  el.innerHTML=rev.map((c,i)=>{
+    const realIdx=S.convos.length-1-i;
+    return `<div class="jentry">
+      <div class="del-row">
+        <div class="jmeta"><span class="jdate">${c.date}</span><span class="jphase">Rozmowa #${S.convos.length-i}</span>${c.open?`<span class="jwho">otwartość ${c.open}/5</span>`:''}</div>
+        ${amAdmin()?`<button class="del-inline" onclick="deleteConvo(${realIdx})">🗑</button>`:''}
+      </div>
+      <div class="jtext">${c.name}${c.inst?' · '+c.inst:''}</div>
+      <div class="jresult">TCE: ${c.tce||'—'} | Problem: ${c.prob||'—'}</div>
+      ${c.quote?`<div class="jresult" style="font-style:italic">"${c.quote}"</div>`:''}</div>`;
+  }).join('');
 }
+
+window.deleteConvo = async (idx) => {
+  if(!confirm('Usunąć tę rozmowę?')) return;
+  S.convos.splice(idx,1); _pendingChange='Usunięto rozmowę';
+  await save();
+};
 
 function renderContacts() {
   const el=document.getElementById('contactList');
+  const baseNames=BASE_CONTACTS.map(c=>c.name);
   const all=[...BASE_CONTACTS,...(S.contacts||[])];
-  el.innerHTML=all.map(c=>`<div class="crow">
-    <div class="avatar">${c.initials||(c.name.split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
-    <div style="flex:1;min-width:0">
-      <div class="cname">${c.name}</div>
-      <div class="crole">${c.role||''}</div>
-      ${c.phone?`<div class="cphone">📞 ${c.phone}</div>`:''}
-      ${c.notes?`<div class="cnotes">${c.notes}</div>`:''}
-      ${(c.tags||[]).length?`<div class="ctags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>`:''}
-    </div>
-    <span class="cbadge ${c.prio==='crit'?'cbadge-crit':'cbadge-imp'}">${c.prio==='crit'?'Kryt.':'Ważny'}</span>
-  </div>`).join('');
+  el.innerHTML=all.map((c,i)=>{
+    const isCustom=!baseNames.includes(c.name);
+    const customIdx=(S.contacts||[]).findIndex(x=>x.name===c.name);
+    return `<div class="crow" style="position:relative">
+      <div class="avatar">${c.initials||(c.name.split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
+      <div style="flex:1;min-width:0">
+        <div class="cname">${c.name}</div>
+        <div class="crole">${c.role||''}</div>
+        ${c.phone?`<div class="cphone">📞 ${c.phone}</div>`:''}
+        ${c.notes?`<div class="cnotes">${c.notes}</div>`:''}
+        ${(c.tags||[]).length?`<div class="ctags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="cbadge ${c.prio==='crit'?'cbadge-crit':'cbadge-imp'}">${c.prio==='crit'?'Kryt.':'Ważny'}</span>
+        ${isCustom&&amAdmin()?`<button class="del-inline" onclick="deleteContact(${customIdx})" title="Usuń">🗑 usuń</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
+
+window.deleteContact = async (idx) => {
+  if(!confirm('Usunąć ten kontakt?')) return;
+  S.contacts.splice(idx,1);
+  _pendingChange='Usunięto kontakt';
+  await save();
+};
 
 function renderExpenses() {
   const el=document.getElementById('expList');
   if(!(S.expenses||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">💰</div>Brak wydatków.</div>';return;}
-  el.innerHTML=[...S.expenses].reverse().map(e=>`<div class="brow">
-    <div><div class="blabel">${e.desc}</div><div class="bsub">${e.date} · ${e.cat}</div></div>
-    <div class="bamount">${fmt(e.amount)} zł</div></div>`).join('');
+  const rev=[...S.expenses].reverse();
+  el.innerHTML=rev.map((e,i)=>{
+    const realIdx=S.expenses.length-1-i;
+    return `<div class="brow">
+      <div><div class="blabel">${e.desc}</div><div class="bsub">${e.date} · ${e.cat}</div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="bamount">${fmt(e.amount)} zł</div>
+        ${amAdmin()?`<button class="del-inline" onclick="deleteExpense(${realIdx})">🗑</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
+
+window.deleteExpense = async (idx) => {
+  if(!confirm('Usunąć ten wydatek?')) return;
+  S.expenses.splice(idx,1); _pendingChange='Usunięto wydatek';
+  await save();
+};
 
 function renderMessages() {
   const el=document.getElementById('messageList');
   if(!(S.messages||[]).length){el.innerHTML='<div class="empty"><div class="empty-ico">✉️</div>Brak wiadomości.</div>';return;}
   const icons={email:'📧',sms:'💬',linkedin:'💼',whatsapp:'📱'};
-  el.innerHTML=[...S.messages].reverse().map(m=>`<div class="msg-row">
-    <div class="msg-icon" style="background:var(--lblue)">${icons[m.type]||'📧'}</div>
-    <div style="flex:1;min-width:0">
-      <div class="msg-to">Do: ${m.to}</div>
-      <div class="msg-subject">${m.subject}</div>
-      <div class="msg-date">${m.date}</div>
-    </div>
-    <span class="msg-status status-${m.status||'sent'}">${m.status==='draft'?'Szkic':m.status==='waiting'?'Czeka':'Wysłano'}</span>
-  </div>`).join('');
+  const rev=[...S.messages].reverse();
+  el.innerHTML=rev.map((m,i)=>{
+    const realIdx=S.messages.length-1-i;
+    return `<div class="msg-row">
+      <div class="msg-icon" style="background:var(--lblue)">${icons[m.type]||'📧'}</div>
+      <div style="flex:1;min-width:0">
+        <div class="msg-to">Do: ${m.to}</div>
+        <div class="msg-subject">${m.subject}</div>
+        <div class="msg-date">${m.date}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="msg-status status-${m.status||'sent'}">${m.status==='draft'?'Szkic':m.status==='waiting'?'Czeka':'Wysłano'}</span>
+        ${amAdmin()?`<button class="del-inline" onclick="deleteMessage(${realIdx})">🗑</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
+
+window.deleteMessage = async (idx) => {
+  if(!confirm('Usunąć tę wiadomość?')) return;
+  S.messages.splice(idx,1); _pendingChange='Usunięto wiadomość';
+  await save();
+};
 
 // PLAN
 function renderPlan() {
@@ -1187,11 +1289,12 @@ window.showTab = (name, btn) => {
   if(btn) btn.classList.add('active');
   if(name==='calendar') renderCalendar();
   if(name==='historia') loadHistory();
+  if(name==='pomysly') renderPomysly();
   if(name==='zespol') loadTeamData();
 };
 
 window.onFab = () => {
-  const map={dashboard:'journal',tasks:'task',journal:'journal',convos:'convo',contacts:'contact',budget:'expense',messages:'message',calendar:'event',plan:'planstep',ai:'journal',historia:'journal',zespol:'journal'};
+  const map={dashboard:'journal',tasks:'task',journal:'journal',convos:'convo',contacts:'contact',budget:'expense',messages:'message',calendar:'event',plan:'planstep',ai:'journal',historia:'journal',pomysly:'pomysl',zespol:'journal'};
   openModal(map[currentTab]||'journal');
 };
 
@@ -1259,6 +1362,14 @@ window.openModal = type => {
       <div class="field"><label>Opis</label><input type="text" id="mPSDesc" placeholder="Szczegóły..."></div>
       <div class="field"><label>Termin (opcja)</label><input type="date" id="mPSDeadline"></div>
       <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="savePlanStep()">Dodaj</button></div>`;
+  } else if(type==='pomysl'){
+    mc.innerHTML=`<div class="modal-title">Nowy pomysł</div>
+      <div class="field"><label>Tytuł</label><input type="text" id="mPTitle" placeholder="Nazwa pomysłu"></div>
+      <div class="field"><label>Opis</label><textarea id="mPDesc" placeholder="Na czym polega? Jaki rynek?"></textarea></div>
+      <div class="field"><label>Tagi (przez przecinek)</label><input type="text" id="mPTags" placeholder="Usługa, B2C, Automotive"></div>
+      <div class="field"><label>Status</label><select id="mPStatus"><option value="nowy">Nowy</option><option value="badanie">W badaniu</option><option value="gotowy">Gotowy</option><option value="odrzucony">Odrzucony</option></select></div>
+      <div class="field"><label>Źródło</label><input type="text" id="mPSource" placeholder="Własny / Marcin Karbarz / ..."></div>
+      <div class="btn-row"><button class="btn" onclick="closeModal()">Anuluj</button><button class="btn btn-primary" onclick="savePomysl()">Dodaj</button></div>`;
   } else if(type==='expense'){
     mc.innerHTML=`<div class="modal-title">Nowy wydatek</div>
       <div class="field"><label>Opis</label><input type="text" id="mEDesc" placeholder="np. Domeny arthemys.eu"></div>
@@ -1333,6 +1444,21 @@ window.savePlanStep = async () => {
   await save(); closeModal();
 };
 
+window.savePomysl = async () => {
+  const title=document.getElementById('mPTitle').value.trim(); if(!title){alert('Wpisz tytuł.');return;}
+  if(!S.pomysly) S.pomysly=getPomysly();
+  const tags=document.getElementById('mPTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  S.pomysly.push({
+    id:'idea_'+Date.now(), title,
+    desc:document.getElementById('mPDesc').value,
+    tags, status:document.getElementById('mPStatus').value,
+    source:document.getElementById('mPSource').value||'Własny',
+    date:new Date().toISOString().slice(0,10)
+  });
+  _pendingChange=`Nowy pomysł: ${title}`;
+  await save(); closeModal(); renderPomysly();
+};
+
 window.saveExpense = async () => {
   const desc=document.getElementById('mEDesc').value.trim();
   const amount=parseFloat(document.getElementById('mEAmt').value);
@@ -1341,6 +1467,46 @@ window.saveExpense = async () => {
   S.expenses.push({desc,amount,cat:document.getElementById('mECat').value,date:document.getElementById('mEDate').value,addedBy:who()});
   _pendingChange=`Nowy wydatek: ${desc} (${amount} zł)`;
   await save(); closeModal();
+};
+
+// ── POMYSŁY ───────────────────────────────────────────────────────────────────
+const DEFAULT_POMYSLY = [
+  {id:'idea1',title:'Dekuplaż jako usługa',desc:'Budowanie marki wokół usługi dekuplażu zamiast sprzedaży samego produktu. Konserwatorzy płacą za efekt, nie za żel.',tags:['Usługa','Marka'],status:'badanie',source:'Własny',date:'2026-05-12'},
+  {id:'idea2',title:'Oczyszczanie tapicerki',desc:'Zastosowanie organożelu do czyszczenia tapicerki w autach, kanapach, krzesłach. Potencjalny rynek masowy poza konserwacją.',tags:['Produkt','B2C'],status:'nowy',source:'Własny',date:'2026-05-12'},
+  {id:'idea3',title:'Usuwanie napisów z kartki',desc:'Demonstrator dla uczniów — pokazanie działania żelu przez usuwanie napisów z papieru. Narzędzie edukacyjne i marketingowe.',tags:['Edukacja','Demo'],status:'nowy',source:'Własny',date:'2026-05-12'},
+  {id:'idea4',title:'Konserwacja papirusów',desc:'Zastosowanie żelu do konserwacji starożytnych papirusów i dokumentów. Niszowy ale prestiżowy rynek muzealny.',tags:['Konserwacja','Muzea'],status:'nowy',source:'Własny',date:'2026-05-12'},
+  {id:'idea5',title:'Usuwanie zabezpieczeń obrazów',desc:'Usuwanie wierzchniego zabezpieczenia (werniksu) z obrazów bez uszkodzenia farby. Kluczowe zastosowanie konserwatorskie.',tags:['Konserwacja','Sztuka'],status:'badanie',source:'Własny',date:'2026-05-12'},
+  {id:'idea6',title:'Usuwanie plam żywicy z lakieru auta',desc:'Info od Marcina Karbarza — organożel skutecznie usuwa plamy żywicy z lakieru samochodowego. Duży potencjał rynku automotive.',tags:['Automotive','Produkt'],status:'nowy',source:'Marcin Karbarz',date:'2026-05-12'},
+];
+
+function getPomysly() { return S.pomysly && S.pomysly.length ? S.pomysly : DEFAULT_POMYSLY; }
+
+function renderPomysly() {
+  const el=document.getElementById('pomyslyList'); if(!el) return;
+  const list=getPomysly();
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-ico">💡</div>Brak pomysłów.</div>';return;}
+  const statusColors={nowy:'status-nowy',badanie:'status-badanie',gotowy:'status-gotowy',odrzucony:'status-odrzucony'};
+  const statusLabels={nowy:'Nowy',badanie:'W badaniu',gotowy:'Gotowy',odrzucony:'Odrzucony'};
+  const tagColors=['itag-blue','itag-green','itag-orange','itag-red'];
+  el.innerHTML=list.map((idea,i)=>`<div class="idea-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div class="idea-title">${idea.title}</div>
+      ${amAdmin()?`<button class="del-inline" onclick="deleteIdea(${i})" style="flex-shrink:0">🗑</button>`:''}
+    </div>
+    <div class="idea-desc">${idea.desc}</div>
+    <div class="idea-tags">${(idea.tags||[]).map((t,ti)=>`<span class="idea-tag ${tagColors[ti%4]}">${t}</span>`).join('')}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <span class="idea-status ${statusColors[idea.status]||'status-nowy'}">${statusLabels[idea.status]||'Nowy'}</span>
+      <span class="idea-meta">Źródło: ${idea.source||'Własny'} · ${idea.date||''}</span>
+    </div>
+  </div>`).join('');
+}
+
+window.deleteIdea = async (idx) => {
+  if(!confirm('Usunąć ten pomysł?')) return;
+  if(!S.pomysly) S.pomysly=getPomysly();
+  S.pomysly.splice(idx,1); _pendingChange='Usunięto pomysł';
+  await save(); renderPomysly();
 };
 
 // SCROLLBAR
