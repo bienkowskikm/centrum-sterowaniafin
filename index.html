@@ -37,6 +37,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .tabs::-webkit-scrollbar { display: none; }
 .tab { flex: 0 0 auto; padding: 12px 14px; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; border: none; border-bottom: 2.5px solid transparent; background: none; white-space: nowrap; transition: color 0.15s; font-family: inherit; }
 .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.tabs-wrap:not(.tabs-ready) .tab { display: none !important; }
 .tabs-scroll-track { height: 3px; background: var(--surface2); margin: 0 12px 6px; border-radius: 2px; position: relative; cursor: pointer; }
 .tabs-scroll-thumb { height: 3px; background: var(--blue); border-radius: 2px; position: absolute; top: 0; left: 0; transition: width 0.1s; cursor: grab; min-width: 24px; opacity: 0.6; }
 .tabs-scroll-thumb:active { cursor: grabbing; opacity: 1; }
@@ -539,28 +540,37 @@ const DEFAULT_MEMBER_TABS = ['plan','contacts'];
 let currentUserProfile = null; // loaded from Firestore users collection
 
 function isAdmin() {
-  return currentUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  if (!currentUser) return false;
+  return currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase();
 }
 
 async function loadUserProfile() {
   if (!currentUser) return;
+  // Admin — natychmiast pełny dostęp, bez czekania na Firestore
+  if (isAdmin()) {
+    currentUserProfile = { role: 'admin', tabs: ALL_TABS };
+    setupTabs();
+    // Zapisz w tle (nie await — nie blokuj UI)
+    setDoc(doc(db, 'uzytkownicy', currentUser.uid), {
+      uid: currentUser.uid, email: currentUser.email,
+      name: currentUser.displayName || currentUser.email,
+      role: 'admin', tabs: ALL_TABS,
+    }).catch(e => console.error(e));
+    return;
+  }
+  // Dla pozostałych — wczytaj z Firestore
   try {
-    const ref = doc(db, 'uzytkownicy', currentUser.uid);
-    const snap = await getDoc(ref);
+    const snap = await getDoc(doc(db, 'uzytkownicy', currentUser.uid));
     if (snap.exists()) {
       currentUserProfile = snap.data();
     } else {
-      // First login — create profile
-      const isAdm = isAdmin();
       currentUserProfile = {
-        uid: currentUser.uid,
-        email: currentUser.email,
+        uid: currentUser.uid, email: currentUser.email,
         name: currentUser.displayName || currentUser.email,
-        role: isAdm ? 'admin' : 'member',
-        tabs: isAdm ? ALL_TABS : DEFAULT_MEMBER_TABS,
+        role: 'member', tabs: DEFAULT_MEMBER_TABS,
         joinedAt: new Date().toISOString(),
       };
-      await setDoc(ref, currentUserProfile);
+      await setDoc(doc(db, 'uzytkownicy', currentUser.uid), currentUserProfile);
     }
     setupTabs();
   } catch(e) { console.error('loadUserProfile:', e); setupTabs(); }
@@ -578,12 +588,13 @@ function setupTabs() {
     if (!tabName) return;
     tab.style.display = myTabs.includes(tabName) ? '' : 'none';
   });
-  // Show Zespół tab only for admin
   const zt = document.getElementById('tabZespol');
   if (zt) zt.style.display = isAdmin() ? '' : 'none';
-  // Hide FAB for view-only members (only plan+contacts)
   const fabEl = document.getElementById('fab');
   if (fabEl) fabEl.style.display = (myTabs.length <= 2 && !isAdmin()) ? 'none' : '';
+  // Show only the right tabs (remove hidden state)
+  const wrap = document.querySelector('.tabs-wrap');
+  if (wrap) wrap.classList.add('tabs-ready');
 }
 
 // ── DEFAULT DATA ──────────────────────────────────────────────────────────────
