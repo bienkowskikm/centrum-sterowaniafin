@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1F3864">
 <title>Centrum Sterowania — Organożel</title>
 <style>
@@ -486,7 +487,7 @@ const db = getFirestore(app);
 // ══════════════════════════════════════════════════════
 // KONFIGURACJA — ZMIEŃ NA SWÓJ EMAIL
 // ══════════════════════════════════════════════════════
-const ADMIN_EMAIL = 'bienkowskikm@gmail.com';
+const ADMIN_EMAILS = ['bienkowskikm@gmail.com', 'krzysbienkowski@gmail.com'];
 const BUDGET_TOTAL = 50000;
 const ALL_TABS = ['dashboard','plan','calendar','tasks','journal','convos','contacts','messages','ai','budget','historia','zespol'];
 const DEFAULT_MEMBER_TABS = ['plan','contacts'];
@@ -502,7 +503,7 @@ let _pendingChange = null;
 // ══════════════════════════════════════════════════════
 function amAdmin() {
   if (!CU || !CU.email) return false;
-  return CU.email.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase();
+  return ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(CU.email.trim().toLowerCase());
 }
 
 // ══════════════════════════════════════════════════════
