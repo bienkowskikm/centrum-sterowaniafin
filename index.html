@@ -1112,33 +1112,55 @@ window.toggleUserTab = async (uid,tabName,btn) => {
 };
 
 // AI
-window.processAI = async () => {
-  const text=document.getElementById('aiInput').value.trim();
+window.processAI = () => {
+  const text = document.getElementById('aiInput').value.trim();
   if(!text){alert('Wklej notatkę!');return;}
-  const spinner=document.getElementById('aiSpinner');
-  const result=document.getElementById('aiResult');
-  spinner.classList.add('show'); result.classList.remove('show');
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:1500,
-        system:`Analizujesz notatki dotyczące projektu komercjalizacji organożelu. Odpowiedz TYLKO JSON bez żadnego tekstu przed ani po:
-{"summary":"2-3 zdania","journal_entry":{"date":"YYYY-MM-DD","phase":"FAZA 1 — Walidacja","text":"...","result":"..."},"contacts":[{"name":"","role":"","phone":"","notes":"","tags":[],"prio":"crit"}],"events":[{"title":"","date":"YYYY-MM-DD","time":"","type":"spotkanie","person":"","location":"","notes":""}],"tasks":[{"text":"","desc":"","prio":"pilne","week":true}]}
-Rok domyślny 2026. Puste tablice jeśli brak danych.`,
-        messages:[{role:'user',content:text}]
-      })
-    });
-    const data=await res.json();
-    const raw=data.content?.map(i=>i.text||'').join('');
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    window._aiParsed=parsed;
-    result.innerHTML=`<strong>📋 ${parsed.summary}</strong><br><br>
-      Znalezione: ✅ wpis${(parsed.contacts||[]).length?' · 👤 '+parsed.contacts.length+' kontakt(ów)':''}${(parsed.events||[]).length?' · 📅 '+parsed.events.length+' wydarzenie(ń)':''}${(parsed.tasks||[]).length?' · ✏️ '+parsed.tasks.length+' zadanie(ń)':''}<br><br>
-      <button class="btn btn-green" onclick="applyAI()" style="width:100%">✅ Zatwierdź i dodaj</button>`;
+
+  const prompt = `Jesteś asystentem do przetwarzania notatek dziennych projektu komercjalizacji organożelu (patent EP 4 164 895 B1).
+
+Przeanalizuj poniższą notatkę i wyciągnij z niej ustrukturyzowane dane. Odpowiedz TYLKO w formacie JSON (bez żadnego tekstu przed ani po):
+
+{"summary":"2-3 zdaniowe podsumowanie dnia","journal_entry":{"date":"YYYY-MM-DD","phase":"FAZA 1 — Walidacja","text":"szczegółowy opis działań","result":"wyniki i ustalenia"},"contacts":[{"name":"Imię Nazwisko","role":"stanowisko/org","phone":"numer lub pusty","notes":"ustalenia","tags":["tag1"],"prio":"crit"}],"events":[{"title":"tytuł","date":"YYYY-MM-DD","time":"HH:MM lub pusty","type":"spotkanie","person":"osoba","location":"miejsce lub pusty"}],"tasks":[{"text":"co zrobić","desc":"szczegóły","prio":"pilne","week":true}]}
+
+Rok domyślny 2026. Puste tablice [] jeśli brak danych.
+
+NOTATKA:
+${text}`;
+
+  // Skopiuj prompt do schowka i otwórz Claude
+  navigator.clipboard.writeText(prompt).then(() => {
+    const result = document.getElementById('aiResult');
+    result.innerHTML = `<strong>📋 Instrukcja:</strong><br><br>
+      1. Prompt skopiowany do schowka ✓<br>
+      2. Kliknij poniżej aby otworzyć Claude.ai<br>
+      3. Wklej (Ctrl+V) i wyślij<br>
+      4. Skopiuj odpowiedź JSON i wklej poniżej<br><br>
+      <a href="https://claude.ai" target="_blank" class="btn btn-primary" style="display:block;text-align:center;padding:12px;border-radius:8px;text-decoration:none;color:#fff;background:#1F3864;font-weight:600">🤖 Otwórz Claude.ai</a><br>
+      <textarea id="aiJsonInput" class="ai-input" style="height:120px;margin-top:8px" placeholder='Wklej tutaj odpowiedź JSON z Claude...'></textarea>
+      <button class="btn btn-green" onclick="parseAIJson()" style="width:100%;margin-top:8px">✅ Przetwórz i dodaj do aplikacji</button>`;
     result.classList.add('show');
-  } catch(e){result.innerHTML=`<span style="color:#E24B4A">Błąd: ${e.message}</span>`;result.classList.add('show');}
-  spinner.classList.remove('show');
+  }).catch(() => {
+    // Fallback jeśli schowek niedostępny
+    const result = document.getElementById('aiResult');
+    result.innerHTML = `<strong>Skopiuj ten prompt i wklej go w Claude.ai:</strong><br><br>
+      <textarea class="ai-input" style="height:200px;font-size:11px" readonly>${prompt}</textarea><br>
+      <a href="https://claude.ai" target="_blank" class="btn btn-primary" style="display:block;text-align:center;padding:12px;border-radius:8px;text-decoration:none;color:#fff;background:#1F3864;font-weight:600;margin-top:8px">🤖 Otwórz Claude.ai</a><br>
+      <textarea id="aiJsonInput" class="ai-input" style="height:120px;margin-top:8px" placeholder='Wklej tutaj odpowiedź JSON z Claude...'></textarea>
+      <button class="btn btn-green" onclick="parseAIJson()" style="width:100%;margin-top:8px">✅ Przetwórz i dodaj</button>`;
+    result.classList.add('show');
+  });
+};
+
+window.parseAIJson = async () => {
+  const raw = document.getElementById('aiJsonInput').value.trim();
+  if(!raw){alert('Wklej odpowiedź JSON z Claude.');return;}
+  try {
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    window._aiParsed = parsed;
+    await applyAI();
+  } catch(e) {
+    alert('Błąd parsowania JSON: ' + e.message + '\nUpewnij się że skopiowałeś całą odpowiedź JSON.');
+  }
 };
 
 window.applyAI = async () => {
