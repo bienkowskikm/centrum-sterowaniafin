@@ -9,7 +9,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Centrum Sterowania — Organożel</title>
+<title>Centrum Sterowania v6 — Organożel</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F0F2F5;color:#111;-webkit-tap-highlight-color:transparent}
@@ -351,7 +351,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
       <div class="card-title">Budżet</div>
       <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;color:var(--text3)">Wydano</span><span style="font-size:18px;font-weight:600" id="dBudgetSpent">0 zł</span></div>
       <div class="progress-wrap"><div class="progress-bar" id="dBudgetBar" style="width:0%"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:11px;color:var(--text3)">0 zł</span><span style="font-size:11px;color:var(--text3)">50 000 zł</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:11px;color:var(--text3)">0 zł</span><span style="font-size:11px;color:var(--text3)">100 000 zł</span></div>
     </div>
   </div>
 
@@ -443,7 +443,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
   <!-- BUDŻET -->
   <div id="tab-budget" class="screen">
     <div class="stat-row">
-      <div class="stat"><div class="stat-label">Budżet (zł)</div><div class="stat-value">50 000</div></div>
+      <div class="stat"><div class="stat-label">Budżet (zł)</div><div class="stat-value">100 000</div></div>
       <div class="stat"><div class="stat-label">Pozostało (zł)</div><div class="stat-value" id="bLeft">50 000</div></div>
     </div>
     <div class="card" style="padding:10px 14px">
@@ -526,7 +526,7 @@ const db = getFirestore(app);
 // KONFIGURACJA — ZMIEŃ NA SWÓJ EMAIL
 // ══════════════════════════════════════════════════════
 const ADMIN_EMAILS = ['bienkowskikm@gmail.com', 'krzysbienkowski@gmail.com'];
-const BUDGET_TOTAL = 50000;
+const BUDGET_TOTAL = 100000;
 const ALL_TABS = ['dashboard','plan','calendar','tasks','journal','convos','contacts','messages','ai','budget','historia','pomysly','zespol'];
 const DEFAULT_MEMBER_TABS = ['plan','contacts'];
 
@@ -797,17 +797,22 @@ function renderWeekBadge() {
 function fmt(n) { return Math.round(n).toLocaleString('pl-PL'); }
 
 function renderStats() {
+  const BT = S.budgetTotal || BUDGET_TOTAL;
   const done=(S.tasks||[]).filter(t=>t.done).length, total=(S.tasks||[]).length;
   const spent=(S.expenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
   document.getElementById('sDone').textContent=done+'/'+total;
   document.getElementById('sConvo').textContent=(S.convos||[]).length+'/15';
   document.getElementById('sSpent').textContent=fmt(spent);
-  document.getElementById('sLeft').textContent=fmt(BUDGET_TOTAL-spent);
+  document.getElementById('sLeft').textContent=fmt(BT-spent);
   document.getElementById('dBudgetSpent').textContent=fmt(spent)+' zł';
-  document.getElementById('dBudgetBar').style.width=Math.min(100,Math.round(spent/BUDGET_TOTAL*100))+'%';
-  document.getElementById('bLeft').textContent=fmt(BUDGET_TOTAL-spent);
+  document.getElementById('dBudgetBar').style.width=Math.min(100,Math.round(spent/BT*100))+'%';
+  document.getElementById('bLeft').textContent=fmt(BT-spent);
   document.getElementById('convoNum').textContent=(S.convos||[]).length;
   document.getElementById('convoBar').style.width=Math.min(100,Math.round((S.convos||[]).length/15*100))+'%';
+  // Update budget label dynamically
+  const bstatEl=document.querySelector('.stat .stat-value');
+  const allStats=document.querySelectorAll('.stat');
+  allStats.forEach(s=>{if(s.querySelector('.stat-label')&&s.querySelector('.stat-label').textContent.includes('Budżet')){const v=s.querySelector('.stat-value');if(v)v.textContent=fmt(BT);}});
 }
 
 function renderWeekTasks() {
@@ -1221,11 +1226,42 @@ window.processAI = () => {
 
   const prompt = `Jesteś asystentem do przetwarzania notatek dziennych projektu komercjalizacji organożelu (patent EP 4 164 895 B1).
 
-Przeanalizuj poniższą notatkę i wyciągnij z niej ustrukturyzowane dane. Odpowiedz TYLKO w formacie JSON (bez żadnego tekstu przed ani po):
+Przeanalizuj notatkę i wyciągnij WSZYSTKIE dane. Odpowiedz TYLKO JSON (bez tekstu przed/po, bez markdown):
 
-{"summary":"2-3 zdaniowe podsumowanie dnia","journal_entry":{"date":"YYYY-MM-DD","phase":"FAZA 1 — Walidacja","text":"szczegółowy opis działań","result":"wyniki i ustalenia"},"contacts":[{"name":"Imię Nazwisko","role":"stanowisko/org","phone":"numer lub pusty","notes":"ustalenia","tags":["tag1"],"prio":"crit"}],"events":[{"title":"tytuł","date":"YYYY-MM-DD","time":"HH:MM lub pusty","type":"spotkanie","person":"osoba","location":"miejsce lub pusty"}],"tasks":[{"text":"co zrobić","desc":"szczegóły","prio":"pilne","week":true}]}
+{
+  "summary": "2-3 zdaniowe podsumowanie",
+  "journal_entry": {
+    "date": "YYYY-MM-DD",
+    "phase": "FAZA 0 — Licencja | FAZA 1 — Walidacja | FAZA 2 — Strategia | FAZA 3 — Firma | FAZA 4 — Finansowanie | FAZA 5 — Pilotaż | CIĄGŁE",
+    "text": "szczegółowy opis działań",
+    "result": "wyniki i ustalenia"
+  },
+  "contacts": [
+    {"name": "Imię Nazwisko", "role": "stanowisko/org", "phone": "numer lub ''", "notes": "ustalenia", "tags": ["tag"], "prio": "crit lub imp"}
+  ],
+  "events": [
+    {"title": "tytuł", "date": "YYYY-MM-DD", "time": "HH:MM lub ''", "type": "spotkanie lub telefon lub deadline lub inne", "person": "osoba", "location": "miejsce lub ''"}
+  ],
+  "tasks": [
+    {"text": "co zrobić", "desc": "szczegóły", "prio": "pilne lub ważne lub normalne", "week": true}
+  ],
+  "expenses": [
+    {"desc": "opis wydatku", "amount": 123.45, "cat": "Prawnik / licencja | Odczynniki chemiczne | Rejestracja firmy | Domeny / IT | Podróże / spotkania | Marketing | Inne", "date": "YYYY-MM-DD"}
+  ],
+  "pomysly": [
+    {"title": "tytuł pomysłu", "desc": "opis", "tags": ["tag"], "status": "nowy", "source": "skąd pomysł"}
+  ],
+  "budget_update": null
+}
 
-Rok domyślny 2026. Puste tablice [] jeśli brak danych.
+ZASADY:
+- Rok domyślny 2026
+- Puste tablice [] jeśli brak danych dla danej sekcji
+- budget_update: jeśli notatka mówi o zmianie budżetu wpisz nową kwotę jako liczbę (np. 100000), inaczej null
+- expenses: wyciągnij KAŻDY wydatek z kwotą — domeny, opłaty, podróże, wszystko
+- pomysly: wyciągnij nowe pomysły na produkty/usługi jeśli są
+- contacts: TYLKO nowe osoby, nie duplikuj istniejących
+- events: każde spotkanie, telefon, deadline z datą
 
 NOTATKA:
 ${text}`;
@@ -1233,14 +1269,14 @@ ${text}`;
   // Skopiuj prompt do schowka i otwórz Claude
   navigator.clipboard.writeText(prompt).then(() => {
     const result = document.getElementById('aiResult');
-    result.innerHTML = `<strong>📋 Instrukcja:</strong><br><br>
-      1. Prompt skopiowany do schowka ✓<br>
-      2. Kliknij poniżej aby otworzyć Claude.ai<br>
-      3. Wklej (Ctrl+V) i wyślij<br>
-      4. Skopiuj odpowiedź JSON i wklej poniżej<br><br>
-      <a href="https://claude.ai" target="_blank" class="btn btn-primary" style="display:block;text-align:center;padding:12px;border-radius:8px;text-decoration:none;color:#fff;background:#1F3864;font-weight:600">🤖 Otwórz Claude.ai</a><br>
-      <textarea id="aiJsonInput" class="ai-input" style="height:120px;margin-top:8px" placeholder='Wklej tutaj odpowiedź JSON z Claude...'></textarea>
-      <button class="btn btn-green" onclick="parseAIJson()" style="width:100%;margin-top:8px">✅ Przetwórz i dodaj do aplikacji</button>`;
+    result.innerHTML = `<strong>📋 Prompt skopiowany!</strong><br><br>
+      1. Kliknij "Otwórz Claude.ai" poniżej<br>
+      2. Wklej prompt (Ctrl+V) i wyślij<br>
+      3. Skopiuj CAŁĄ odpowiedź JSON<br>
+      4. Wklej poniżej i kliknij Przetwórz<br><br>
+      <a href="https://claude.ai" target="_blank" style="display:block;text-align:center;padding:12px;border-radius:8px;text-decoration:none;color:#fff;background:#1F3864;font-weight:600;margin-bottom:8px">🤖 Otwórz Claude.ai →</a>
+      <textarea id="aiJsonInput" class="ai-input" style="height:140px;margin-top:4px;font-size:12px;font-family:monospace" placeholder='{"summary":"...","journal_entry":{...},"expenses":[...],...}'></textarea>
+      <button class="btn btn-green" onclick="parseAIJson()" style="width:100%;margin-top:8px">✅ Przetwórz i dodaj wszystko</button>`;
     result.classList.add('show');
   }).catch(() => {
     // Fallback jeśli schowek niedostępny
@@ -1260,7 +1296,20 @@ window.parseAIJson = async () => {
   try {
     const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
     window._aiParsed = parsed;
-    await applyAI();
+    // Show preview before applying
+    const r = document.getElementById('aiResult');
+    const lines = [];
+    if(parsed.summary) lines.push('<strong>📋 '+parsed.summary+'</strong>');
+    lines.push('');
+    if(parsed.journal_entry) lines.push('✅ Wpis do dziennika: '+parsed.journal_entry.date);
+    if((parsed.contacts||[]).length) lines.push('👤 Kontakty: '+parsed.contacts.length);
+    if((parsed.events||[]).length) lines.push('📅 Wydarzenia: '+parsed.events.length);
+    if((parsed.tasks||[]).length) lines.push('✏️ Zadania: '+parsed.tasks.length);
+    if((parsed.expenses||[]).length) lines.push('💰 Wydatki: '+parsed.expenses.length+' ('+parsed.expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0).toFixed(2)+' zł)');
+    if((parsed.pomysly||[]).length) lines.push('💡 Pomysły: '+parsed.pomysly.length);
+    if(parsed.budget_update) lines.push('💵 Nowy budżet: '+parsed.budget_update.toLocaleString('pl-PL')+' zł');
+    r.innerHTML = lines.join('<br>')+'<br><br><button class="btn btn-green" onclick="applyAI()" style="width:100%">✅ Zatwierdź i dodaj wszystko</button>';
+    r.classList.add('show');
   } catch(e) {
     alert('Błąd parsowania JSON: ' + e.message + '\nUpewnij się że skopiowałeś całą odpowiedź JSON.');
   }
@@ -1268,19 +1317,95 @@ window.parseAIJson = async () => {
 
 window.applyAI = async () => {
   const p=window._aiParsed; if(!p)return;
-  if(p.journal_entry){if(!S.journal)S.journal=[];S.journal.push({...p.journal_entry,who:CU?.displayName||CU?.email});}
-  (p.contacts||[]).forEach(c=>{
+  const added=[];
+
+  // DZIENNIK
+  if(p.journal_entry && p.journal_entry.text){
+    if(!S.journal) S.journal=[];
+    S.journal.push({...p.journal_entry, who: CU?.displayName||CU?.email});
+    added.push('wpis do dziennika');
+  }
+
+  // KONTAKTY — deduplikacja względem BASE_CONTACTS i S.contacts
+  if((p.contacts||[]).length){
     if(!S.contacts) S.contacts=[];
-    const allNames=[...BASE_CONTACTS.map(x=>x.name.toLowerCase()),...(S.contacts||[]).map(x=>x.name.toLowerCase())];
-    if(!allNames.includes(c.name.toLowerCase())) S.contacts.push(c);
-  });
-  (p.events||[]).forEach(e=>{if(!S.events)S.events=[];S.events.push({...e,id:'ev_'+Date.now()+Math.random()});});
-  (p.tasks||[]).forEach(t=>{if(!S.tasks)S.tasks=[];S.tasks.push({...t,id:S.nid++,phase:'1',done:false});});
-  _pendingChange='Notatka AI: automatyczne uzupełnienie';
+    const allNames=[...BASE_CONTACTS.map(x=>x.name.toLowerCase()),...S.contacts.map(x=>x.name.toLowerCase())];
+    let newC=0;
+    p.contacts.forEach(c=>{
+      if(c.name && !allNames.includes(c.name.toLowerCase())){
+        S.contacts.push(c); allNames.push(c.name.toLowerCase()); newC++;
+      }
+    });
+    if(newC) added.push(newC+' kontakt(ów)');
+  }
+
+  // WYDARZENIA — deduplikacja po tytule+dacie
+  if((p.events||[]).length){
+    if(!S.events) S.events=[];
+    const evKeys=new Set(S.events.map(e=>(e.title||'').toLowerCase()+'|'+(e.date||'')));
+    let newE=0;
+    p.events.forEach(e=>{
+      const key=(e.title||'').toLowerCase()+'|'+(e.date||'');
+      if(!evKeys.has(key)){
+        S.events.push({...e,id:'ev_'+Date.now()+Math.random()});
+        evKeys.add(key); newE++;
+      }
+    });
+    if(newE) added.push(newE+' wydarzenie(ń)');
+  }
+
+  // ZADANIA
+  if((p.tasks||[]).length){
+    if(!S.tasks) S.tasks=[];
+    let newT=0;
+    p.tasks.forEach(t=>{
+      if(t.text){
+        S.tasks.push({...t,id:S.nid++,phase:'1',done:false}); newT++;
+      }
+    });
+    if(newT) added.push(newT+' zadanie(ń)');
+  }
+
+  // WYDATKI
+  if((p.expenses||[]).length){
+    if(!S.expenses) S.expenses=[];
+    let newExp=0;
+    p.expenses.forEach(e=>{
+      if(e.desc && e.amount){
+        S.expenses.push({...e, amount:parseFloat(e.amount)||0, addedBy: CU?.displayName||CU?.email});
+        newExp++;
+      }
+    });
+    if(newExp) added.push(newExp+' wydatek(ów)');
+  }
+
+  // POMYSŁY — deduplikacja po tytule
+  if((p.pomysly||[]).length){
+    if(!S.pomysly) S.pomysly=getPomysly();
+    const pomTitles=new Set(S.pomysly.map(x=>x.title.toLowerCase()));
+    let newP=0;
+    p.pomysly.forEach(idea=>{
+      if(idea.title && !pomTitles.has(idea.title.toLowerCase())){
+        S.pomysly.push({...idea, id:'idea_'+Date.now()+Math.random(), date:new Date().toISOString().slice(0,10)});
+        pomTitles.add(idea.title.toLowerCase()); newP++;
+      }
+    });
+    if(newP) added.push(newP+' pomysł(ów)');
+  }
+
+  // BUDŻET
+  if(p.budget_update && typeof p.budget_update==='number' && p.budget_update>0){
+    // Store budget update — can't change const so store in S
+    S.budgetTotal=p.budget_update;
+    added.push('budżet → '+p.budget_update.toLocaleString('pl-PL')+' zł');
+  }
+
+  _pendingChange='Notatka AI: '+added.join(', ');
   await save();
   document.getElementById('aiInput').value='';
   document.getElementById('aiResult').classList.remove('show');
-  alert('✅ Dane dodane!');
+  window._aiParsed=null;
+  alert('✅ Dodano: '+added.join(', ')+'.');
 };
 
 // TABS
