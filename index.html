@@ -42,8 +42,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .tabs-wrap{background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
 .tabs{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;padding:12px 14px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;white-space:nowrap;font-family:inherit;display:none}
-.tab.vis{display:block}
+.tab{flex:0 0 auto;padding:12px 14px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;white-space:nowrap;font-family:inherit}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 .scroll-track{height:3px;background:var(--surface2);margin:0 12px 6px;border-radius:2px;position:relative;cursor:pointer}
 .scroll-thumb{height:3px;background:var(--blue);border-radius:2px;position:absolute;top:0;left:0;min-width:24px;opacity:.6;cursor:grab}
@@ -513,12 +512,7 @@ function setupTabs(allowedTabs) {
   document.querySelectorAll('.tab').forEach(tab => {
     const name = tab.getAttribute('data-tab');
     if (!name) return;
-    if (allowedTabs.includes(name)) {
-      tab.classList.add('vis');
-    } else {
-      tab.classList.remove('vis');
-      tab.style.display = 'none'; // extra safety
-    }
+    tab.style.display = allowedTabs.includes(name) ? '' : 'none';
   });
   document.getElementById('fab').style.display = (allowedTabs.length <= 2) ? 'none' : '';
   initScrollbar();
@@ -580,10 +574,11 @@ function activateFirstTab(tabs) {
 }
 
 function show(id) {
-  ['loadingScreen','loginScreen','registerScreen','appScreen'].forEach(s => {
-    document.getElementById(s).style.display = 'none';
-  });
-  document.getElementById(id).style.display = id === 'appScreen' ? 'flex' : 'flex';
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('registerScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById(id).style.display = 'flex';
 }
 
 window.doLogin = async () => {
